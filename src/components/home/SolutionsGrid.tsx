@@ -3,18 +3,18 @@ import Link from "next/link";
 import { Heading } from "@/components/ui/typography";
 
 const solutions = [
-    { title: "Educación", image: "/assets/images/solutions/educacion.png" },
-    { title: "Salud", image: "/assets/images/solutions/salud.png" },
-    { title: "Adulto Mayor", image: "/assets/images/solutions/adulto-mayor.png" },
-    { title: "HORECA", image: "/assets/images/solutions/horeca.png" },
-    { title: "Veterinaria", image: "/assets/images/solutions/veterinaria.png" },
-    { title: "Maquinaria", image: "/assets/images/solutions/maquinaria.png" },
+    { title: "Soluciones Generales de Higiene", image: "/assets/images/solutions/jardines.png" },
+    { title: "Soluciones Especializadas sector Industrial y Almacenaje", image: "/assets/images/solutions/industria.png" },
+    { title: "Soluciones Especializadas sector Institucional", image: "/assets/images/solutions/oficinas.png" },
+    { title: "Soluciones Especializadas sector Educación", image: "/assets/images/solutions/educacion.png" },
+    { title: "Soluciones Generales para sector Salud", image: "/assets/images/solutions/salud.png" },
+    { title: "Soluciones Generales para sector HORECA", image: "/assets/images/solutions/horeca.png" },
+    { title: "Soluciones Especializadas sector Veterinario", image: "/assets/images/solutions/veterinaria.png" },
+    { title: "Equipamiento Accesorios", image: "/assets/images/solutions/limpieza-general.png" },
+    { title: "Soluciones para Centros Adulto Mayor", image: "/assets/images/solutions/adulto-mayor.png" },
+    { title: "Equipamientos de Maquinaria", image: "/assets/images/solutions/maquinaria.png" },
     { title: "Tratamiento de Aguas", image: "/assets/images/solutions/aguas.png" },
-    { title: "Embarcaciones", image: "/assets/images/solutions/embarcaciones.png" },
-    { title: "Oficinas", image: "/assets/images/solutions/oficinas.png" },
-    { title: "Limpieza General", image: "/assets/images/solutions/limpieza-general.png" },
-    { title: "Jardines", image: "/assets/images/solutions/jardines.png" },
-    { title: "Industria", image: "/assets/images/solutions/industria.png" },
+    { title: "Soluciones para Embarcaciones", image: "/assets/images/solutions/embarcaciones.png" },
 ];
 
 export function SolutionsGrid() {

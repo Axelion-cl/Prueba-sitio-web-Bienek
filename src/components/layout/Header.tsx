@@ -117,8 +117,8 @@ export function Header() {
             </div>
 
             {/* 4. Search Bar & Statement */}
-            <div className="bg-black text-white py-4">
-                <div className="container mx-auto px-4 flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div className="bg-black text-white flex items-center" style={{ height: '80px' }}>
+                <div className="container mx-auto px-4 flex justify-between items-center h-full">
 
                     {/* Search Input */}
                     <div className="relative w-full lg:w-1/3">

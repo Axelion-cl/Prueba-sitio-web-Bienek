@@ -108,7 +108,7 @@ export function Header() {
             </div>
 
             {/* 3. Brand Description Bar */}
-            <div className="bg-white border-t border-gray-100 py-6 hidden lg:block">
+            <div className="bg-white border-t border-gray-100 hidden lg:flex items-center" style={{ height: '60px' }}>
                 <div className="container mx-auto px-4">
                     <p className="font-sans text-xl text-gray-800 tracking-wide">
                         Soluciones Integrales de Higiene Industrial

@@ -117,7 +117,7 @@ export function Header() {
             </div>
 
             {/* 4. Search Bar & Statement */}
-            <div className="bg-black text-white flex items-center" style={{ height: '80px' }}>
+            <div className="bg-black text-white flex items-center" style={{ height: '70px' }}>
                 <div className="container mx-auto px-4 flex justify-between items-center h-full">
 
                     {/* Search Input */}

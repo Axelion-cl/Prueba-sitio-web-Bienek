@@ -63,7 +63,7 @@ export function Header() {
             </div>
 
             {/* 2. Main Menu */}
-            <div className="bg-white py-4 shadow-sm z-20 relative">
+            <div className="bg-white py-4 z-20 relative">
                 <div className="container mx-auto px-4 flex justify-between items-center">
 
                     {/* Left Side: Logo + Nav */}
@@ -108,7 +108,7 @@ export function Header() {
             </div>
 
             {/* 3. Brand Description Bar */}
-            <div className="bg-white border-t border-gray-100 hidden lg:flex items-center" style={{ height: '60px' }}>
+            <div className="bg-white hidden lg:flex items-center" style={{ height: '60px' }}>
                 <div className="container mx-auto px-4">
                     <p className="font-sans text-xl text-gray-800 tracking-wide">
                         Soluciones Integrales de Higiene Industrial

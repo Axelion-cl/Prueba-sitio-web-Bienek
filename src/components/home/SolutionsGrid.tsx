@@ -86,7 +86,7 @@ export function SolutionsGrid() {
                                 src={item.image}
                                 alt={item.title}
                                 fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                className="object-cover transition-transform duration-500 group-hover:scale-110 group-hover:blur-sm"
                             />
 
                             {/* Overlay Gradient */}

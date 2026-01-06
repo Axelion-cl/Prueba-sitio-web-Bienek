@@ -71,7 +71,7 @@ export function SolutionsGrid() {
             <div className="container mx-auto px-4 space-y-12">
                 <div className="text-center">
                     <Heading>Nuestras Soluciones</Heading>
-                    <div className="mx-auto mt-4 h-[3px] w-12 bg-[#ecec00] rounded-full" />
+                    <div className="mx-auto mt-4 bg-[#ecec00] rounded-full" style={{ width: '176px', height: '5px' }} />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

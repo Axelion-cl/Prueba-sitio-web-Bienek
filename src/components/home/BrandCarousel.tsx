@@ -28,29 +28,29 @@ const brands = [
 
 export function BrandCarousel() {
     return (
-        <section className="py-8 bg-gray-50 border-y border-gray-100 overflow-hidden">
-            <div className="container mx-auto px-4 mb-12 text-center relative z-10 text-[40px]">
-                <h3 className="font-sans font-normal text-black flex flex-col items-center gap-4 text-[40px] leading-tight" style={{ fontSize: '40px', fontFamily: 'var(--font-outfit)' }}>
+        <section className="py-16 bg-gray-50 border-y border-gray-100 overflow-hidden">
+            <div className="container mx-auto px-4 mb-[106px] text-center relative z-10">
+                <h2 className="font-sans font-normal text-black text-[2.5rem] md:text-[55px] leading-tight mb-6">
                     Marcas Destacadas
-                    <span className="bg-[#ecec00] block" style={{ width: '176px', height: '5px' }} />
-                </h3>
+                </h2>
+                <div className="mx-auto bg-[#ecec00]" style={{ width: '176px', height: '5px' }} />
             </div>
 
-            <div className="relative w-full overflow-hidden mask-linear-fade h-24 flex items-center">
-                <div className="flex animate-scroll whitespace-nowrap w-max gap-16 items-center h-full">
+            <div className="relative w-full overflow-hidden mask-linear-fade h-32 flex items-center">
+                <div className="flex animate-scroll whitespace-nowrap w-max items-center h-full" style={{ gap: '128px' }}>
                     {/* Duplicate list for seamless loop */}
                     {[...brands, ...brands].map((brand, index) => (
                         <div
                             key={index}
-                            className="relative h-16 w-40 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300 transform hover:scale-110 cursor-pointer flex items-center justify-center shrink-0"
-                            style={{ height: '64px', width: '160px' }}
+                            className="relative h-24 w-48 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300 transform hover:scale-110 cursor-pointer flex items-center justify-center shrink-0"
+                            style={{ height: '96px', width: '192px' }}
                         >
                             <Image
                                 src={brand.src}
                                 alt={`${brand.name} Logo`}
                                 fill
-                                className="object-contain"
-                                sizes="160px"
+                                className="object-contain p-2"
+                                sizes="192px"
                             />
                         </div>
                     ))}
@@ -64,7 +64,7 @@ export function BrandCarousel() {
           100% { transform: translateX(-50%); }
         }
         .animate-scroll {
-          animation: scroll 40s linear infinite;
+          animation: scroll 80s linear infinite;
         }
         .mask-linear-fade {
              mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);

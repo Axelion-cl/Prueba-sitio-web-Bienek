@@ -1,14 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { Product } from "@/data/mockProducts";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, Check } from "lucide-react";
 
 interface ProductCardProps {
     product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+    const [isAdded, setIsAdded] = useState(false);
+
+    const handleAddClick = () => {
+        setIsAdded(!isAdded);
+        // TODO: Future cart functionality when user is logged in
+    };
+
     return (
         <div className="bg-white rounded-xl overflow-hidden flex flex-col h-full border border-gray-100 shadow-sm hover:shadow-lg hover:border-gray-200 transition-all duration-300 group">
             {/* Image Placeholder - Square with icon */}
@@ -48,18 +56,23 @@ export function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 {/* Buttons */}
-                <div className="mt-auto flex flex-col gap-1.5">
+                <div className="mt-auto flex flex-col" style={{ gap: '10px' }}>
                     <button
                         type="button"
-                        className="w-full text-black font-semibold text-sm py-2 rounded-md hover:opacity-90 transition-opacity"
-                        style={{ backgroundColor: '#ecec00' }}
+                        onClick={handleAddClick}
+                        className={`w-full text-black font-normal text-base py-2.5 rounded-md shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${isAdded
+                                ? 'shadow-inner scale-[0.98]'
+                                : 'hover:scale-[1.02] active:scale-[0.98]'
+                            }`}
+                        style={{ backgroundColor: isAdded ? '#ECEC80' : '#ecec00' }}
                     >
-                        Agregar
+                        {isAdded && <Check className="w-4 h-4" />}
+                        {isAdded ? 'Agregado' : 'Agregar'}
                     </button>
 
                     <button
                         type="button"
-                        className="w-full text-black font-semibold text-sm py-2 rounded-md hover:opacity-90 transition-opacity"
+                        className="w-full text-black font-normal text-base py-2.5 rounded-md shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
                         style={{ backgroundColor: '#A7E0A0' }}
                     >
                         Mas Info

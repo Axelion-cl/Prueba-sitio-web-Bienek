@@ -121,7 +121,6 @@ export function Header() {
                         <nav className="hidden lg:flex items-center gap-8 font-sans font-medium text-base text-gray-700">
                             <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
                             <Link href="#" className="hover:text-primary transition-colors">Soluciones</Link>
-                            <Link href="#" className="hover:text-primary transition-colors">Catálogo</Link>
                             <Link href="#" className="hover:text-primary transition-colors">Promociones</Link>
                         </nav>
                     </div>

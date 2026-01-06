@@ -5,61 +5,73 @@ import { Heading } from "@/components/ui/typography";
 const solutions = [
     {
         title: "Soluciones Generales de Higiene",
+        slug: "soluciones-generales-de-higiene",
         image: "/assets/images/solutions/jardines.png",
         subcategories: ["Limpieza de Pisos", "Desinfección", "Baños", "Aromas"]
     },
     {
         title: "Soluciones Especializadas sector Industrial y Almacenaje",
+        slug: "soluciones-especializadas-sector-industrial-y-almacenaje",
         image: "/assets/images/solutions/industria.png",
         subcategories: ["Desengrasantes", "Limpiadores Industriales", "Absorbentes", "Protección Personal"]
     },
     {
         title: "Soluciones Especializadas sector Institucional",
+        slug: "soluciones-especializadas-sector-institucional",
         image: "/assets/images/solutions/oficinas.png",
         subcategories: ["Limpieza General", "Papelería", "Baños Públicos", "Alfombras"]
     },
     {
         title: "Soluciones Especializadas sector Educación",
+        slug: "soluciones-especializadas-sector-educacion",
         image: "/assets/images/solutions/educacion.png",
         subcategories: ["Aulas", "Baños y Vestidores", "Patios", "Comedores"]
     },
     {
         title: "Soluciones Generales para sector Salud",
+        slug: "soluciones-especializadas-sector-salud",
         image: "/assets/images/solutions/salud.png",
         subcategories: ["Desinfección Hospitalaria", "Esterilización", "Cuidado de Pacientes", "Áreas Críticas"]
     },
     {
         title: "Soluciones Generales para sector HORECA",
+        slug: "soluciones-especializadas-sector-horeca",
         image: "/assets/images/solutions/horeca.png",
         subcategories: ["Cocina", "Limpieza de Mesas", "Lavandería", "Baños"]
     },
     {
         title: "Soluciones Especializadas sector Veterinario",
+        slug: "soluciones-especializadas-sector-veterinario",
         image: "/assets/images/solutions/veterinaria.png",
         subcategories: ["Desinfección de Jaulas", "Quirófanos", "Salas de Espera", "Control de Olores"]
     },
     {
         title: "Equipamiento Accesorios",
+        slug: "equipamiento-accesorios",
         image: "/assets/images/solutions/limpieza-general.png",
         subcategories: ["Mopas y Carros", "Paños", "Escobas", "Señalética"]
     },
     {
         title: "Soluciones para Centros Adulto Mayor",
+        slug: "soluciones-para-centros-adulto-mayor",
         image: "/assets/images/solutions/adulto-mayor.png",
         subcategories: ["Higiene Personal", "Incontinencia", "Desinfección", "Lavandería"]
     },
     {
         title: "Equipamientos de Maquinaria",
+        slug: "equipamientos-de-maquinaria",
         image: "/assets/images/solutions/maquinaria.png",
         subcategories: ["Aspiradoras", "Abrillantadoras", "Barredoras", "Hidrolavadoras"]
     },
     {
         title: "Tratamiento de Aguas",
+        slug: "tratamiento-de-agua",
         image: "/assets/images/solutions/aguas.png",
         subcategories: ["Cloración", "Filtración", "Medición", "Bombas"]
     },
     {
         title: "Soluciones para Embarcaciones",
+        slug: "soluciones-para-embarcaciones",
         image: "/assets/images/solutions/embarcaciones.png",
         subcategories: ["Limpieza de Cascos", "Interiores", "Motores", "Desengrasantes"]
     },
@@ -77,7 +89,7 @@ export function SolutionsGrid() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {solutions.map((item, index) => (
                         <Link
-                            href="#"
+                            href={`/soluciones/${item.slug}`}
                             key={index}
                             className="group relative h-64 w-full overflow-hidden rounded-2xl shadow-md block"
                         >

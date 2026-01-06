@@ -1,20 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Search, Globe, Truck, Clock, Phone, ChevronDown } from "lucide-react";
+import { Search, Globe, Truck, Clock, Phone, ChevronDown, Menu, X } from "lucide-react";
 import { SearchBar } from "./SearchBar";
 
 export function Header() {
     const [isLangOpen, setIsLangOpen] = useState(false);
     const [selectedLang, setSelectedLang] = useState("Español");
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const handleLanguageSelect = (lang: string) => {
         setSelectedLang(lang);
         setIsLangOpen(false);
     };
+
+    // Close mobile menu when resizing to desktop
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     return (
         <header className="w-full flex flex-col sticky top-0 z-[100] shadow-md" style={{ position: 'sticky', top: 0, zIndex: 100 }}>
@@ -132,17 +144,58 @@ export function Header() {
                             Blog Técnico
                         </Link>
 
-                        <div className="flex items-center gap-2 text-sm font-medium cursor-pointer hover:text-primary transition-colors group">
+                        <div className="hidden lg:flex items-center gap-2 text-sm font-medium cursor-pointer hover:text-primary transition-colors group">
                             <Image src="/assets/icons/acceso-clientes.svg" alt="Login" width={20} height={20} className="group-hover:opacity-80" />
                             <span>Acceso Clientes</span>
                         </div>
 
-                        <Button className="bg-primary hover:bg-primary/90 text-black font-medium text-base rounded-full px-8 py-6 shadow-none">
+                        <Button className="hidden lg:flex bg-primary hover:bg-primary/90 text-black font-medium text-base rounded-full px-8 py-6 shadow-none">
                             CONTACTENOS
                         </Button>
+
+                        {/* Mobile Menu Toggle */}
+                        <button
+                            className="lg:hidden p-2 text-gray-700 hover:text-primary transition-colors"
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            aria-label="Toggle menu"
+                        >
+                            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                        </button>
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Menu Panel - OUTSIDE Main Menu section */}
+            {isMobileMenuOpen && (
+                <div className="lg:hidden bg-white border-b border-gray-200 shadow-lg">
+                    <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
+                        {/* Primary Links */}
+                        <Link href="/" className="text-gray-700 font-medium hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>Inicio</Link>
+                        <Link href="#" className="text-gray-700 font-medium hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>Soluciones</Link>
+                        <Link href="#" className="text-gray-700 font-medium hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>Catálogo</Link>
+                        <Link href="#" className="text-gray-700 font-medium hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>Promociones</Link>
+
+                        <div className="h-px bg-gray-200 my-2" />
+
+                        {/* Secondary Links */}
+                        <Link href="#" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>Blog Técnico</Link>
+                        <Link href="#" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>Empresa</Link>
+                        <Link href="#" className="text-gray-600 hover:text-primary transition-colors py-2" onClick={() => setIsMobileMenuOpen(false)}>Bolsa de Trabajo</Link>
+
+                        <div className="h-px bg-gray-200 my-2" />
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2 text-gray-700 font-medium py-2">
+                            <Image src="/assets/icons/acceso-clientes.svg" alt="Login" width={20} height={20} />
+                            <span>Acceso Clientes</span>
+                        </div>
+
+                        <Button className="w-full bg-primary hover:bg-primary/90 text-black font-medium text-base rounded-full px-8 py-4 shadow-none">
+                            CONTACTENOS
+                        </Button>
+                    </nav>
+                </div>
+            )}
 
             {/* 3. Brand Description Bar */}
             <div className="bg-white hidden lg:flex items-center" style={{ height: '60px' }}>

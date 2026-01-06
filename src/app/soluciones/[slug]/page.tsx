@@ -1,6 +1,4 @@
 import { notFound } from "next/navigation";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { SectorHero } from "@/components/soluciones/SectorHero";
 import { ProductGrid } from "@/components/soluciones/ProductGrid";
 import { getSectorBySlug, sectors } from "@/data/sectors";
@@ -27,11 +25,10 @@ export default async function SolucionesPage({ params }: PageProps) {
     const products = getProductsBySector(sector.id);
 
     return (
-        <main className="min-h-screen bg-white">
-            <Header />
+        <>
             <SectorHero sector={sector} />
             <ProductGrid products={products} />
-            <Footer />
-        </main>
+        </>
     );
 }
+

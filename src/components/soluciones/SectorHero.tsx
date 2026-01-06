@@ -7,7 +7,7 @@ interface SectorHeroProps {
 
 export function SectorHero({ sector }: SectorHeroProps) {
     return (
-        <section className="relative py-12 md:py-16" style={{ backgroundColor: '#f5f8fa' }}>
+        <section className="relative" style={{ backgroundColor: '#f5f8fa', paddingTop: '48px', paddingBottom: '80px' }}>
             <div className="container mx-auto px-4">
                 <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-6">
                     {/* Icon/Image Placeholder */}

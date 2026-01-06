@@ -53,7 +53,7 @@ export function ProductGrid({ products }: ProductGridProps) {
             <div className="container mx-auto px-4">
 
                 {/* Search & Filter Bar - Modern centered design */}
-                <div className="flex items-center justify-center gap-2" style={{ marginTop: '10px', marginBottom: '50px' }}>
+                <div className="flex items-center justify-center gap-2" style={{ marginTop: '60px', marginBottom: '50px' }}>
 
                     {/* Search Input - Pill shape with shadow */}
                     <div

@@ -43,9 +43,9 @@ export function ProductCard({ product }: ProductCardProps) {
                 </h3>
 
                 {/* Brand Row */}
-                <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs font-semibold text-red-600 uppercase tracking-wide">MARCA:</span>
-                    <div className="relative h-4 w-12">
+                <div className="flex items-center gap-2 mb-2">
+                    <span className="text-sm font-semibold text-red-600 uppercase tracking-wide">MARCA:</span>
+                    <div className="relative shrink-0" style={{ width: '96px', height: '28px' }}>
                         <Image
                             src={product.brandLogo}
                             alt={product.brand}
@@ -56,13 +56,13 @@ export function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 {/* Buttons */}
-                <div className="mt-auto flex flex-col" style={{ gap: '10px' }}>
+                <div className="mt-auto pt-4 flex flex-col" style={{ gap: '10px' }}>
                     <button
                         type="button"
                         onClick={handleAddClick}
                         className={`w-full text-black font-normal text-base py-2.5 rounded-md shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${isAdded
-                                ? 'shadow-inner scale-[0.98]'
-                                : 'hover:scale-[1.02] active:scale-[0.98]'
+                            ? 'shadow-inner scale-[0.98]'
+                            : 'hover:scale-[1.02] active:scale-[0.98]'
                             }`}
                         style={{ backgroundColor: isAdded ? '#ECEC80' : '#ecec00' }}
                     >

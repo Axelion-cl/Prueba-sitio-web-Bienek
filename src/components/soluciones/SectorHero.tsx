@@ -35,7 +35,7 @@ export function SectorHero({ sector }: SectorHeroProps) {
                             lineHeight: '1.2',
                         }}
                     >
-                        Soluciones Integrales de Limpieza
+                        Soluciones Generales de Higiene
                     </h1>
                 </div>
             </div>

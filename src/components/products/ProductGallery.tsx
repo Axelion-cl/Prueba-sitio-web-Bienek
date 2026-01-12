@@ -15,7 +15,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
     return (
         <div className="flex flex-col gap-4">
             {/* Main Image */}
-            <div className="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+            <div className="relative w-full aspect-[4/3] bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                 <Image
                     src={images[selectedImage]}
                     alt={`${productName} - Vista principal`}

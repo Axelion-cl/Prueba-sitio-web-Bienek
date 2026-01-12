@@ -66,7 +66,7 @@ export function ProductCard({ product }: ProductCardProps) {
                             ? 'shadow-inner scale-[0.98]'
                             : 'hover:scale-[1.02] active:scale-[0.98]'
                             }`}
-                        style={{ backgroundColor: isAdded ? '#ECEC80' : '#ecec00' }}
+                        style={{ backgroundColor: isAdded ? '#ECEC80' : '#ECEC00' }}
                     >
                         {isAdded && <Check className="w-4 h-4" />}
                         {isAdded ? 'Agregado' : 'Agregar'}

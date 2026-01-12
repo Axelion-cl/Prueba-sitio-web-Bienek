@@ -12,16 +12,14 @@ Este documento registra los cambios implementados durante las sesiones de desarr
     - `ProductGallery`: Galería interactiva.
     - `ProductInfo`: Info crítica (Marca, Título, SKU, Badges) y botón de acción (Agregar).
     - `RelatedProducts`: Grilla de productos relacionados.
-- **Datos Mock**: Actualizado `mockProducts.ts` con arrays de imágenes, descripciones largas, especificaciones, badges y relaciones.
+- **Datos Mock**: Actualizado `mockProducts.ts` con arrays de imágenes, descripciones largas, especificaciones, badges y **más productos relacionados (8 items)** para probar carousel.
 - **UI/UX Refinado**: 
-    - Eliminado botón "Cotizar" y visualización de precios.
-    - Eliminado texto legal de IVA.
-    - Reordenado Brand debajo de Título.
-    - **Reestructuración de Layout**: Descripción y Especificaciones movidas a la columna derecha debajo de la información crítica, optimizando el espacio vertical y eliminando los espacios vacíos.
-    - Layout responsivo (Galería izquierda, Info derecha en desktop), transiciones suaves, cards clickeables.
-- **Correcciones**:
-    - `ProductCard` ahora usa imágenes reales y es totalmente clickeable.
-    - Se corrigió la estructura HTML en `ProductPage` para asegurar contenedores cerrados correctamente.
+    - **Header de Info**: Brand reubicado entre Título y SKU, con tamaño aumentado. SKU movido al final de este bloque.
+    - **Carrusel Relacionados**: Implementado con **Embla Carousel**. Flechas reubicadas a los extremos izquierdo y derecho (afuera del grid). Efecto de deslizamiento suave.
+    - **Tarjetas de Producto**: Se aseguró que las tarjetas usan el mismo estilo que en Soluciones (Botones "Agregar" Amarillo y "Mas Info" Verde). 
+    - **Corrección de Visibilidad**: Eliminada restricción de altura fija (`h-[420px]`) que cortaba las tarjetas.
+    - **Imagen de Producto**: Aspect ratio ajustado a 4:3.
+    - **Layout**: Descripción y Especificaciones movidas a la columna derecha.
 
 ## Sesión: 2026-01-09
 

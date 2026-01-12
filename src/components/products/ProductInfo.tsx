@@ -16,20 +16,17 @@ export function ProductInfo({ product }: ProductInfoProps) {
     return (
         <div className="flex flex-col gap-6">
 
-            {/* Title & SKU */}
-            <div className="space-y-2">
+            {/* Title */}
+            <div>
                 <h1 className="font-outfit font-bold text-3xl md:text-4xl text-gray-900 leading-tight">
                     {product.name}
                 </h1>
-                <p className="text-gray-500 font-medium text-sm">
-                    {product.sku}
-                </p>
             </div>
 
-            {/* Brand Header (Moved below title) */}
+            {/* Brand Header (Moved below title, Larger) */}
             <div className="flex items-center gap-2">
                 <span className="text-sm font-bold text-red-600 uppercase tracking-wider">MARCA:</span>
-                <div className="relative h-8 w-24">
+                <div className="relative h-12 w-32">
                     <Image
                         src={product.brandLogo}
                         alt={product.brand}
@@ -37,6 +34,13 @@ export function ProductInfo({ product }: ProductInfoProps) {
                         className="object-contain object-left"
                     />
                 </div>
+            </div>
+
+            {/* SKU (Moved below Brand) */}
+            <div>
+                <p className="text-gray-500 font-medium text-sm">
+                    {product.sku}
+                </p>
             </div>
 
             {/* Badges */}

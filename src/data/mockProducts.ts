@@ -92,6 +92,10 @@ products.forEach((product, i) => {
         products[(i + 2) % products.length].id,
         products[(i + 3) % products.length].id,
         products[(i + 4) % products.length].id,
+        products[(i + 5) % products.length].id,
+        products[(i + 6) % products.length].id,
+        products[(i + 7) % products.length].id,
+        products[(i + 8) % products.length].id,
     ];
 });
 

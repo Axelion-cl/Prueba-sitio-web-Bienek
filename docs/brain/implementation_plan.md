@@ -1,50 +1,36 @@
-# Implementación de Página de Detalle de Producto
+# Plan de Iteración: Detalle de Producto y Navegación Inteligente
 
-El objetivo es crear una página dinámica para mostrar la información detallada de cada producto, siguiendo el diseño del PRD y asegurando una buena experiencia de usuario con carga rápida (ISR) y datos ricos.
+Objetivo: Finalizar la página de producto y dotar al sitio de capacidades de búsqueda rápida y filtrado.
 
-## Revisión del Usuario Requerida
-> [!IMPORTANT]
-> Se modificará la estructura de `mockProducts.ts` para soportar galerías y especificaciones. Esto podría afectar a componentes existentes que dependan de la propiedad `image` (singular). Se actualizarán esos componentes para usar la primera imagen del array `images`.
+## 1. Página de Detalle de Producto (En Progreso)
+*Ya especificado anteriormente. Continuar con la implementación de `src/app/productos/[id]/page.tsx`.*
 
-## Cambios Propuestos
+## 2. Barra de Búsqueda Rápida (Header)
+**Requerimiento de Usuario:** "Barra que despliega un menú dropdown, NO una página de resultados."
 
-### Datos (`src/data`)
-#### [MODIFY] [mockProducts.ts](file:///d:/2.%20Otros/Github/Prueba%20Sitio%20web%20Bienek/src/data/mockProducts.ts)
-- Actualizar interfaz `Product`:
-    - `image: string` -> `images: string[]`
-    - Agregar `description: string` (texto detallado)
-    - Agregar `specs: Record<string, string>` (especificaciones técnicas)
-    - Agregar `relatedProducts: string[]` (IDs de productos relacionados)
-- Estructura de generación de datos mock actualizada para incluir estos campos de forma rica y realista.
+### Implementación (`SearchBar.tsx`):
+- **Tipo:** Client Component (`"use client"`).
+- **Lógica:**
+    - Al escribir, buscar coincidencias en `mockProducts` (o `solutions`) en tiempo real.
+    - Mostrar un **Dropdown Flotante** absoluto debajo del input.
+    - Listar resultados (Máx 5-10).
+    - **Clic:** Navegar directamente a `/productos/[id]` o `/soluciones/[slug]`.
+    - **Enter:** (Opcional) Si hay una coincidencia exacta, ir a ella. Si no, no hacer nada o abrir el dropdown.
 
-### Componentes UI (`src/components/products`)
-#### [NEW] [ProductGallery.tsx](file:///d:/2.%20Otros/Github/Prueba%20Sitio%20web%20Bienek/src/components/products/ProductGallery.tsx)
-- Componente para mostrar la galería de imágenes (imagen principal grande + miniaturas).
+## 3. Filtros Laterales (Página Soluciones)
+**Requerimiento:** Filtrar la grilla de productos actual sin recargar la página.
 
-#### [NEW] [ProductInfo.tsx](file:///d:/2.%20Otros/Github/Prueba%20Sitio%20web%20Bienek/src/components/products/ProductInfo.tsx)
-- Columna derecha con información crítica: Marca, Título, SKU, Badges, Precio (si aplica), Botón Cotizar/Agregar.
+### Implementación:
+- **Componente:** `SidebarFilters.tsx` (Client Component).
+- **Estado:** Usar URL params (`?marca=X&cat=Y`) o Estado Local (Context/State). *Recomendación: Estado Local por ahora para simplicidad con Mocks*.
+- **Integración:**
+    - El `SolutionsLayout` debe envolver la Grilla.
+    - El `SolutionsLayout` debe envolver la Grilla.
+    - Pasar la lista de productos filtrados al `ProductGrid`.
 
-#### [NEW] [RelatedProducts.tsx](file:///d:/2.%20Otros/Github/Prueba%20Sitio%20web%20Bienek/src/components/products/RelatedProducts.tsx)
-- Carrusel de productos relacionados al final de la página.
-
-### Página (`src/app`)
-#### [NEW] [page.tsx](file:///d:/2.%20Otros/Github/Prueba%20Sitio%20web%20Bienek/src/app/productos/[id]/page.tsx)
-- Implementación de la ruta dinámica `src/app/productos/[id]/page.tsx`.
-- Uso de `generateStaticParams` para generar estáticamente las páginas de todos los productos mock.
-- Layout:
-    - Hero: 2 columnas (Galería | Info)
-    - Cuerpo: Descripción detallada + Especificaciones
-    - Footer: Productos relacionados
-
-## Plan de Verificación
-
-### Verificación Automática
-- `npm run build` para asegurar que `generateStaticParams` funciona correctamente y no hay errores de tipo con los nuevos campos.
-
-### Verificación Manual
-- Navegar a un producto específico (ej. `/productos/PROD-1000`)
-- Verificar que la galería carga y permite cambiar imágenes.
-- Verificar que la información (Título, Marca, Specs) corresponde al producto.
-- Verificar que el botón "Agregar" es funcional (o visualmente correcto por ahora).
-- Verificar que el carrusel de productos relacionados muestra items y permite navegación.
-- Verificar responsive en móvil.
+## 4. Requerimientos Futuros (Data Model & Admin)
+**Nota para Backend/Arquitectura:**
+- **Modelo Relacional Flexible:** La base de datos debe soportar un sistema de etiquetado robusto (Many-to-Many).
+    - `Products` <-> `Product_Tags` <-> `Tags` (Type: 'Sector', 'Familia', 'Atributo').
+- **Admin Panel:** Debe permitir crear/editar/eliminar estas etiquetas dinámicamente y asignarlas a productos sin tocar código.
+- **Frontend Mock Current:** El `mockProducts.ts` debe reflejar esto usando arrays de strings para `sectors` (Pages), `family` (Filtros), etc.

@@ -1,6 +1,6 @@
 import { solutions } from "@/data/solutions";
 import { SectorHero } from "@/components/soluciones/SectorHero";
-import { ProductGrid } from "@/components/soluciones/ProductGrid";
+import { SolutionsLayout } from "@/components/soluciones/SolutionsLayout";
 import { products } from "@/data/mockProducts";
 import { notFound } from "next/navigation";
 
@@ -26,7 +26,7 @@ export default async function SolucionesPage({ params }: PageProps) {
     return (
         <main>
             <SectorHero title={solution.title} image={solution.image} />
-            <ProductGrid products={products} />
+            <SolutionsLayout initialProducts={products} />
         </main>
     );
 }

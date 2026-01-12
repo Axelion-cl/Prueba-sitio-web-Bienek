@@ -32,7 +32,9 @@
 - [x] Página Detalle de Producto (`[id]`) (En Progreso) <!-- id: 25 -->
     - [x] Ruta Dinámica `src/app/productos/[id]/page.tsx` <!-- id: 29 -->
     - [x] Componente `ProductDetail` con información visual <!-- id: 30 -->
-- [ ] Buscador y Filtros Avanzados <!-- id: 26 -->
+- [x] Buscador y Filtros Avanzados (En Progreso) <!-- id: 26 -->
+    - [x] **Header:** Buscador "Quick Search" con Dropdown (Sin página de resultados) <!-- id: 33 -->
+    - [x] **Soluciones:** Sidebar de Filtros (Lógica Cliente) <!-- id: 32 -->
 
 ### Fases Futuras (Pendientes)
 - [ ] Fase 4: Autenticación y Mi Cuenta <!-- id: 27 -->

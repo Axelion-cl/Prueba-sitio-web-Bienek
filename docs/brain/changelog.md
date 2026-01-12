@@ -19,8 +19,13 @@ Este documento registra los cambios implementados durante las sesiones de desarr
     - **Carrusel Relacionados**: Implementado con **Embla Carousel**. Flechas separadas 10px adicionales y configuradas para avanzar de **2 en 2**. Título actualizado a "Puede que también te interese:".
     - **Tarjetas de Producto**: Se aseguró que las tarjetas usan el mismo estilo que en Soluciones (Botones "Agregar" Amarillo y "Mas Info" Verde). 
     - **Corrección de Visibilidad**: Eliminada restricción de altura fija (`h-[420px]`).
-    - **Imagen de Producto**: Aspect ratio ajustado a 4:3.
+- **Buscador y Filtros**:
+    - **Header**: Se mantuvo la funcionalidad de "Quick Search" con dropdown.
+    - **Página Soluciones**: Implementado `SolutionsLayout` con barra de búsqueda **local** ySidebar de filtros.
+    - **Filtros**: Sidebar izquierdo con **checkboxes** para filtrar por Marca (soporte multi-selección).
+    - **Integración**: Eliminación del botón "Filtros" móvil; sidebar siempre presente en el flujo (stacked en mobile).
     - **Layout**: Descripción y Especificaciones movidas a la columna derecha.
+    - **Cleanup**: Eliminado botón "Filtros" redundante junto a la barra de búsqueda en Soluciones. UI simplificada a solo Barra de Búsqueda + Sidebar.
 
 ## Sesión: 2026-01-09
 

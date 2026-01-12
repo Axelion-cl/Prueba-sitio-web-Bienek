@@ -24,9 +24,9 @@ export function ProductInfo({ product }: ProductInfoProps) {
             </div>
 
             {/* Brand Header (Moved below title, Larger) */}
-            <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-red-600 uppercase tracking-wider">MARCA:</span>
-                <div className="relative h-12 w-32">
+            <div className="flex items-center gap-[10px]">
+                <span className="text-2xl font-bold text-red-600 uppercase tracking-wider">MARCA:</span>
+                <div className="relative h-10 w-28">
                     <Image
                         src={product.brandLogo}
                         alt={product.brand}

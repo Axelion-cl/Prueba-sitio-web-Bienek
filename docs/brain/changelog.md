@@ -14,10 +14,11 @@ Este documento registra los cambios implementados durante las sesiones de desarr
     - `RelatedProducts`: Grilla de productos relacionados.
 - **Datos Mock**: Actualizado `mockProducts.ts` con arrays de imágenes, descripciones largas, especificaciones, badges y **más productos relacionados (8 items)** para probar carousel.
 - **UI/UX Refinado**: 
-    - **Header de Info**: Brand reubicado entre Título y SKU, con tamaño aumentado. SKU movido al final de este bloque.
-    - **Carrusel Relacionados**: Implementado con **Embla Carousel**. Flechas reubicadas a los extremos izquierdo y derecho (afuera del grid). Efecto de deslizamiento suave.
+    - **Espaciado (Padding)**: Reducido drásticamente el espacio entre la sección principal y los productos relacionados (aprox -75px) y el padding interno de la sección de relacionados (aprox -55px).
+    - **Header de Info**: Brand reubicado entre Título y SKU, con tamaño aumentado (Logo ajustado a `h-10 w-28` y texto "MARCA" en `text-2xl`). SKU movido al final de este bloque.
+    - **Carrusel Relacionados**: Implementado con **Embla Carousel**. Flechas separadas 10px adicionales y configuradas para avanzar de **2 en 2**. Título actualizado a "Puede que también te interese:".
     - **Tarjetas de Producto**: Se aseguró que las tarjetas usan el mismo estilo que en Soluciones (Botones "Agregar" Amarillo y "Mas Info" Verde). 
-    - **Corrección de Visibilidad**: Eliminada restricción de altura fija (`h-[420px]`) que cortaba las tarjetas.
+    - **Corrección de Visibilidad**: Eliminada restricción de altura fija (`h-[420px]`).
     - **Imagen de Producto**: Aspect ratio ajustado a 4:3.
     - **Layout**: Descripción y Especificaciones movidas a la columna derecha.
 

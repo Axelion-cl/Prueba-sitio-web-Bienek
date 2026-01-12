@@ -32,7 +32,7 @@ export default async function ProductPage({ params }: PageProps) {
             <div className="container mx-auto px-4 lg:px-8 pt-6 pb-12">
 
                 {/* 2. Main Product Section: Gallery + Info */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-20">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-1">
 
                     {/* Left: Gallery (7 Cols) */}
                     <div className="lg:col-span-7">

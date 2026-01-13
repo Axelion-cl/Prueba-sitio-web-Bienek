@@ -35,7 +35,16 @@ Objetivo: Finalizar la página de producto y dotar al sitio de capacidades de b�
     - `Users` (Role: 'client' | 'admin')
     - `Orders` (Relation User -> Products)
 
-## 5. Fase 4: Autenticación y Cliente (B2B Workflow)
+## 4. Fase 4: Expansión de Contenido (Marketing)
+**Objetivo:** Generación de tráfico y credibilidad técnica.
+- **Blog Técnico:**
+    - Layout: Grilla de 4 columnas.
+    - Componentes: `ArticleCard` (Imagen, Título, Extracto, CTA).
+    - Navegación: Buscador local + Filtros por categoría via tags.
+- **Bolsa de Trabajo:** Formulario de postulación con carga de CV.
+- **Promociones:** Landing de ofertas.
+
+## 5. Fase 5: Autenticación y Cliente (B2B Workflow)
 **Objetivo:** Gestión de acceso controlado y experiencia personalizada.
 - **Login/Registro:**
     - Modelo "Asistido": El usuario se registra via "Contáctenos" -> Admin lo valida -> Admin genera credenciales.

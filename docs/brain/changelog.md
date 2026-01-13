@@ -26,12 +26,31 @@ Este documento registra los cambios implementados durante las sesiones de desarr
     - **Integración**: Eliminación del botón "Filtros" móvil; sidebar siempre presente en el flujo (stacked en mobile).
     - **Layout**: Descripción y Especificaciones movidas a la columna derecha.
     - **Cleanup**: Eliminado botón "Filtros" redundante junto a la barra de búsqueda en Soluciones. UI simplificada a solo Barra de Búsqueda + Sidebar.
-    - **Header Fix**: Ajustado el contenedor del lema "Líderes en Distribución..." para evitar saltos de línea no deseados (uso de `whitespace-nowrap` y ancho auto).
-    - **Layout Adjustment**: Reducido el ancho del sidebar (w-48 -> w-40) y el gap (gap-16 -> gap-6) en Soluciones para ganar espacio. Grilla de productos ahora es responsiva (2 col movil -> 5 col desktop xl) en lugar de fija.
-    - **Product Card**: Eliminado el padding (`p-4`) de la imagen principal del producto para que ocupe todo el espacio del contenedor ("edge-to-edge").
-    - **Filtros**: Añadida funcionalidad de colapso/despliegue ("acordeón") para la sección de Marcas en el sidebar, con animación suave (`max-h & opacity transition`) y cambio de icono Chevron.
-    - **Grid Update**: Reducido el gap de la grilla de productos (`gap-6` -> `gap-3`) para maximizar el tamaño de las tarjetas.
-    - **UI**: Ajustado el `SectorHero` para limitar el ancho máximo de la caja de título (`max-w-4xl`) y restaurar padding generoso, evitando que toque los bordes de la pantalla en títulos largos.
+## Sesión: 2026-01-13 (Refinamientos UI y Blog Técnico)
+
+### Refinamiento UI Soluciones
+- **Layout General**:
+    - **Header Fix**: Ajustado de `w-full lg:w-1/3` a container flexible con `whitespace-nowrap` para evitar saltos de línea en el lema "Líderes en Distribución...".
+    - **Sidebar**: Reducido el ancho de la barra lateral (`w-40`) y el gap (`gap-6`) para maximizar el espacio de la grilla principal.
+    - **Product Grid**: Ajustado gap a (`gap-3`) y configurada como totalmente responsiva (2 -> 5 columnas).
+- **Componentes**:
+    - **Filtros Sidebar**: Reemplazado diseño estático por **Acordeón Animado** en la sección de marcas (transitions de `max-h` y `opacity`).
+    - **ProductCard**: Eliminado padding interno de imagen (`object-cover` + edge-to-edge) para maximizar impacto visual.
+    - **SectorHero**: Ajustado padding de la "Caja Negra" del título (`px-4/8`) y limitado su ancho (`max-w-4xl`) para evitar márgenes antiestéticos en pantallas grandes.
+
+### Módulo Blog Técnico (`/blog`)
+- **Estructura**: Implementada página base con diseño enfocado en contenido.
+- **Componentes**:
+    - **Header**: Adaptado el estilo visual de "Marcas Destacadas" (Fuente Sans 55px + Barra Amarilla).
+    - **Toolbar**: Buscador en tiempo real y Filtros por categoría (Tags) integrados.
+    - **ArticleCard**: Card limpia con imagen 4:3, Título Outfit y Botón CTA verde.
+    - **Datos**: Mock data centralizada en `src/data/articles.ts` con integración de imagen placeholder abstracta generada.
+    
+### Módulo Bolsa de Trabajo (`/trabaja-con-nosotros`)
+- **Página**: Layout de dos columnas (Información + Formulario).
+- **Formulario**: `JobApplicationForm` con validación completa y feedback de éxito simulado.
+- **Componentes**: 
+    - `FileUpload`: Zona de Drop con validación de tipo (PDF/Word) y tamaño (5MB).
 
 ## Sesión: 2026-01-09
 

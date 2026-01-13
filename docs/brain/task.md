@@ -46,7 +46,11 @@
 - [x] Bolsa de Trabajo (En Progreso) <!-- id: 61 -->
     - [x] Página `/trabaja-con-nosotros` (Layout y Formulario) <!-- id: 67 -->
     - [x] Componente File Upload (Visual Drag & Drop) <!-- id: 69 -->
-- [ ] Promociones <!-- id: 62 -->
+- [x] Promociones (En Progreso) <!-- id: 62 -->
+    - [x] Página `/promociones` (Layout Modular) <!-- id: 70 -->
+    - [x] Grillas de "En Oferta" y "Más Vendidos" <!-- id: 71 -->
+    - [x] Componente `PromoBanner` (Highlight dinámico) <!-- id: 72 -->
+    - [x] Mock de Configuración de Bloques (`src/data/promo-layout.ts`) <!-- id: 73 -->
 
 #### Fase 5: Ecosistema Cliente (Auth & B2B) <!-- id: 27 -->
 - [ ] **Autenticación (Sistema Híbrido)** <!-- id: 40 -->

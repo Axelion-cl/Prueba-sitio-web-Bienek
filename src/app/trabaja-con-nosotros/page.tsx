@@ -23,8 +23,8 @@ export default function TrabajaPage() {
                     {/* Left Column: Info & Values */}
                     <div className="w-full lg:w-5/12 space-y-8 lg:sticky lg:top-32">
                         <div className="space-y-6">
-                            <h2 className="font-outfit font-bold text-3xl text-gray-900 leading-tight">
-                                ¿Por qué unirte a <span className="text-[#a8a800]">Bienek</span>?
+                            <h2 className="font-outfit font-normal text-3xl text-black leading-tight">
+                                ¿Por qué unirte a Bienek?
                             </h2>
                             <p className="text-gray-600 text-lg leading-relaxed">
                                 Buscamos personas apasionadas, comprometidas con la excelencia y con ganas de innovar en el sector de la distribución industrial. Ofrecemos un entorno de trabajo dinámico y oportunidades de crecimiento real.

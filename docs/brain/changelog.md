@@ -51,6 +51,15 @@ Este documento registra los cambios implementados durante las sesiones de desarr
 - **Formulario**: `JobApplicationForm` con validación completa y feedback de éxito simulado.
 - **Componentes**: 
     - `FileUpload`: Zona de Drop con validación de tipo (PDF/Word) y tamaño (5MB).
+    - **Ajuste Visual**: El subtítulo informativo se simplificó a negro y peso normal (`font-normal text-black`) a petición del usuario.
+
+### Módulo Promociones (`/promociones`)
+- **Arquitectura**: Landing modular gestionada por bloques dinámicos (preparada para CMS).
+- **Datos**: `src/data/promo-layout.ts` define un array `promoBlocks` con tipos "grid" y "banner".
+- **Componentes**:
+    - `PromoBanner`: Feature section estilo Apple (imagen + texto + CTA con orientación).
+    - `PromoGrid`: Wrapper que renderiza `ProductCard` según un array de IDs.
+- **Página**: Itera sobre `promoBlocks` y renderiza dinámicamente, sin orden hardcodeado.
 
 ## Sesión: 2026-01-09
 

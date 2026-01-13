@@ -55,9 +55,9 @@ export function Footer() {
                         <h3 className="font-sans font-semibold text-lg leading-6">Información útil</h3>
                     </div>
                     <nav className="flex flex-col gap-1 text-black font-sans font-normal text-base leading-7">
-                        <Link href="#" className="hover:text-primary transition-colors">Blog</Link>
+                        <Link href="/blog" className="hover:text-primary transition-colors">Blog</Link>
                         <Link href="/empresa" className="hover:text-primary transition-colors">Empresa</Link>
-                        <Link href="#" className="hover:text-primary transition-colors">Trabaja Con Nosotros</Link>
+                        <Link href="/trabaja-con-nosotros" className="hover:text-primary transition-colors">Trabaja Con Nosotros</Link>
                     </nav>
                 </div>
 

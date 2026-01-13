@@ -95,7 +95,7 @@ export function Header() {
                         </div>
                         <div className="flex items-center gap-6 text-sm font-medium text-gray-300">
                             <Link href="/empresa" className="hover:text-primary transition-colors">Empresa</Link>
-                            <Link href="#" className="hover:text-primary transition-colors">Bolsa de Trabajo</Link>
+                            <Link href="/trabaja-con-nosotros" className="hover:text-primary transition-colors">Bolsa de Trabajo</Link>
                         </div>
                     </div>
 
@@ -188,13 +188,13 @@ export function Header() {
                                 </div>
                             </div>
 
-                            <Link href="#" className="hover:text-primary transition-colors">Promociones</Link>
+                            <Link href="/promociones" className="hover:text-primary transition-colors">Promociones</Link>
                         </nav>
                     </div>
 
                     {/* Right Side: Actions */}
                     <div className="flex items-center gap-8">
-                        <Link href="#" className="hidden lg:block text-sm font-medium hover:text-primary transition-colors">
+                        <Link href="/blog" className="hidden lg:block text-sm font-medium hover:text-primary transition-colors">
                             Blog Técnico
                         </Link>
 

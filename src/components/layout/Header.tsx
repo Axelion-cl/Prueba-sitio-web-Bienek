@@ -194,11 +194,11 @@ export function Header() {
 
                     {/* Right Side: Actions */}
                     <div className="flex items-center gap-8">
-                        <Link href="/blog" className="hidden lg:block text-sm font-medium hover:text-primary transition-colors">
+                        <Link href="/blog" className="hidden lg:block text-base font-medium hover:text-primary transition-colors">
                             Blog Técnico
                         </Link>
 
-                        <div className="flex items-center gap-2 text-sm font-medium cursor-pointer hover:text-primary transition-colors group">
+                        <div className="flex items-center gap-2 text-base font-medium cursor-pointer hover:text-primary transition-colors group">
                             <Image src="/assets/icons/acceso-clientes.svg" alt="Login" width={20} height={20} className="group-hover:opacity-80" />
                             <span>Acceso Clientes</span>
                         </div>
@@ -213,7 +213,7 @@ export function Header() {
             </div>
 
             {/* 3. Brand Description Bar */}
-            <div className="bg-white hidden lg:flex items-center" style={{ height: '60px' }}>
+            <div className="bg-white hidden lg:flex items-start pt-2" style={{ height: '60px' }}>
                 <div className="container mx-auto px-4">
                     <p className="font-sans text-xl text-gray-800 tracking-wide">
                         Soluciones Integrales de Limpieza

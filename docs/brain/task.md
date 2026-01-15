@@ -63,14 +63,15 @@
     - [x] Persistir preferencia de idioma (localStorage)
 
 #### Fase 7: Administración (CRM Interno) <!-- id: 34 -->
-- [ ] **Seguridad Admin** <!-- id: 35 -->
-    - [ ] Login Admin y Middleware de Protección
-- [ ] **Gestión de Catálogo** <!-- id: 63 -->
-    - [ ] CRUD Productos (Formulario + Carga Masiva) <!-- id: 36 -->
-    - [ ] Gestión de Etiquetas (Sectores, Familias) - Crear/Asociar <!-- id: 37 -->
+- [x] **Seguridad Admin** (Implementado con AdminGuard y layout dedicado) <!-- id: 35 -->
+    - [x] Login Admin y Middleware de Protección
+- [/] **Gestión de Catálogo** <!-- id: 63 -->
+    - [x] CRUD Productos (Listado, Búsqueda, Edición) <!-- id: 36 -->
+    - [x] Carga Masiva de Productos (Wizard de Importación)
+    - [x] Gestión de Etiquetas (Sectores, Familias) - Crear/Asociar <!-- id: 37 -->
 - [ ] **Gestión de Clientes (CRM)** <!-- id: 38 -->
     - [ ] "Convertidor de Leads": Lista de Contactos -> Crear Usuario <!-- id: 52 -->
-    - [ ] Generador de Credenciales <!-- id: 54 -->
+        - [ ] Generador de Credenciales <!-- id: 54 -->
     - [ ] Gestión de Usuarios (Editar/Eliminar) <!-- id: 55 -->
 - [ ] **Gestión de Operaciones** <!-- id: 39 -->
     - [ ] Visor de Ordenes de Clientes <!-- id: 57 -->

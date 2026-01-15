@@ -1,4 +1,6 @@
 import { sectors } from "./sectors";
+import { brands } from "./brands";
+import { families, getFamiliesBySector } from "./families";
 
 export interface Product {
     id: string;
@@ -10,20 +12,13 @@ export interface Product {
     specs: Record<string, string>; // New field
     relatedProducts: string[]; // New field
     sectorIds: string[];
+    familyId?: string; // New field for Family linkage
     price: number;
     sku: string;
     badges: string[]; // New field
 }
 
-const brands = [
-    { name: "3M", logo: "/assets/images/logos/3M.png" },
-    { name: "Elite", logo: "/assets/images/logos/Elite.png" },
-    { name: "Tork", logo: "/assets/images/logos/Tork-Logo.png" },
-    { name: "Wypall", logo: "/assets/images/logos/Wypall.png" },
-    { name: "Lysoform", logo: "/assets/images/logos/Lysoform.png" },
-    { name: "Virginia", logo: "/assets/images/logos/Virginia.png" },
-    { name: "Taski", logo: "/assets/images/logos/newTASKI-RGB-01-2.png" },
-];
+// brands moved to brands.ts
 
 const productTypes = [
     "Detergente Industrial", "Desinfectante Concentrado", "Papel Higiénico Jumbo",
@@ -49,6 +44,10 @@ export const products: Product[] = Array.from({ length: 120 }).map((_, i) => {
     if (i % 3 === 0) {
         sectorIds.push(sectors[(sectorIndex + 1) % sectors.length].id);
     }
+
+    // Assign a family based on the primary sector
+    const sectorFamilies = getFamiliesBySector(sectorIds[0]);
+    const familyId = sectorFamilies.length > 0 ? sectorFamilies[i % sectorFamilies.length].id : undefined;
 
     // Deterministic random-like values
     const hasDiscount = i % 5 === 0;
@@ -78,6 +77,7 @@ export const products: Product[] = Array.from({ length: 120 }).map((_, i) => {
         },
         relatedProducts: [], // Populated below to avoid circular dependency issues during creation
         sectorIds: sectorIds,
+        familyId: familyId,
         price: 5000 + (i * 150),
         sku: `SKU-${50000 + i}`,
         badges: badges

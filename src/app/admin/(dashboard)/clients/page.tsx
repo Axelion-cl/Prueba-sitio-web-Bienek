@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-    Users, UserPlus, Mail, Phone, Calendar,
-    MoreHorizontal, FileText, Key, Trash2, Edit, CheckCircle, ArrowRight
+    Users, UserPlus, Mail, Phone, Plus,
+    FileText, Key, Trash2, Copy, Check, X, AlertTriangle, Save
 } from 'lucide-react';
 import { mockLeads, mockClients, Lead, Client } from '@/data/mockCRM';
 
@@ -16,13 +16,50 @@ export default function ClientsPage() {
     const [leads, setLeads] = useState<Lead[]>(mockLeads);
     const [clients, setClients] = useState<Client[]>(mockClients);
 
+    // Modal States
+    const [passwordModal, setPasswordModal] = useState<{ isOpen: boolean; email: string; password: string }>({
+        isOpen: false, email: '', password: ''
+    });
+    const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; clientId: string; clientName: string }>({
+        isOpen: false, clientId: '', clientName: ''
+    });
+    const [newLeadModal, setNewLeadModal] = useState(false);
+    const [newLeadForm, setNewLeadForm] = useState({ name: '', email: '', message: '' });
+
+    const [adminPassword, setAdminPassword] = useState('');
+    const [deleteError, setDeleteError] = useState('');
+    const [copied, setCopied] = useState(false);
+
+    const generateTempPassword = () => {
+        const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+        return Array.from({ length: 10 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    };
+
+    const handleAddLead = () => {
+        if (!newLeadForm.name || !newLeadForm.email) {
+            alert('Por favor completa al menos el nombre y email.');
+            return;
+        }
+
+        const newLead: Lead = {
+            id: `lead-${Date.now()}`,
+            name: newLeadForm.name,
+            email: newLeadForm.email,
+            message: newLeadForm.message || 'Agregado manualmente por admin',
+            date: new Date().toISOString().split('T')[0],
+            status: 'new'
+        };
+
+        setLeads([newLead, ...leads]);
+        setNewLeadModal(false);
+        setNewLeadForm({ name: '', email: '', message: '' });
+    };
+
     const handleConvertLead = (lead: Lead) => {
         if (!confirm(`¿Convertir a ${lead.name} en cliente? Se generarán y enviarán credenciales.`)) return;
 
-        // Remove from leads
         setLeads(leads.filter(l => l.id !== lead.id));
 
-        // Add to clients
         const newClient: Client = {
             id: `client-${Date.now()}`,
             name: lead.name,
@@ -33,19 +70,36 @@ export default function ClientsPage() {
         };
         setClients([newClient, ...clients]);
 
-        alert(`✅ Cliente creado exitosamente.\n\nCredenciales enviadas a: ${lead.email}\nContraseña temporal: A1b2C3d4`);
+        const tempPass = generateTempPassword();
+        setPasswordModal({ isOpen: true, email: lead.email, password: tempPass });
     };
 
     const handleResetPassword = (client: Client) => {
-        if (confirm(`¿Resetear contraseña para ${client.email}?`)) {
-            alert(`🔑 Nueva contraseña temporal generada y enviada a ${client.email}.`);
-        }
+        const tempPass = generateTempPassword();
+        setPasswordModal({ isOpen: true, email: client.email, password: tempPass });
     };
 
-    const handleDeleteClient = (id: string) => {
-        if (confirm('¿Eliminar cliente? Esta acción no se puede deshacer.')) {
-            setClients(clients.filter(c => c.id !== id));
+    const handleCopyPassword = async () => {
+        await navigator.clipboard.writeText(passwordModal.password);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const openDeleteModal = (client: Client) => {
+        setDeleteModal({ isOpen: true, clientId: client.id, clientName: client.name });
+        setAdminPassword('');
+        setDeleteError('');
+    };
+
+    const handleDeleteConfirm = () => {
+        if (adminPassword !== 'admin123') {
+            setDeleteError('Contraseña incorrecta. Intenta de nuevo.');
+            return;
         }
+
+        setClients(clients.filter(c => c.id !== deleteModal.clientId));
+        setDeleteModal({ isOpen: false, clientId: '', clientName: '' });
+        setAdminPassword('');
     };
 
     return (
@@ -55,6 +109,14 @@ export default function ClientsPage() {
                     <h1 className="text-2xl font-bold text-gray-900">Gestión de Clientes (CRM)</h1>
                     <p className="text-gray-500">Administra leads y clientes registrados.</p>
                 </div>
+                {activeTab === 'leads' && (
+                    <button
+                        onClick={() => setNewLeadModal(true)}
+                        className="flex items-center gap-2 bg-primary text-black px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                    >
+                        <Plus className="w-4 h-4" /> Nuevo Lead
+                    </button>
+                )}
             </div>
 
             {/* Tabs */}
@@ -168,7 +230,7 @@ export default function ClientsPage() {
                                                     <Key className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDeleteClient(client.id)}
+                                                    onClick={() => openDeleteModal(client)}
                                                     className="p-1.5 hover:bg-red-50 rounded text-red-600 transition-colors"
                                                     title="Eliminar Cliente"
                                                 >
@@ -183,6 +245,166 @@ export default function ClientsPage() {
                     </div>
                 )}
             </div>
+
+            {/* New Lead Modal */}
+            {newLeadModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-bold text-gray-900">Agregar Nuevo Lead</h3>
+                            <button onClick={() => setNewLeadModal(false)}>
+                                <X className="w-5 h-5 text-gray-500 hover:text-red-500" />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
+                                <input
+                                    type="text"
+                                    value={newLeadForm.name}
+                                    onChange={(e) => setNewLeadForm({ ...newLeadForm, name: e.target.value })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                                    placeholder="Nombre del potencial cliente"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                                <input
+                                    type="email"
+                                    value={newLeadForm.email}
+                                    onChange={(e) => setNewLeadForm({ ...newLeadForm, email: e.target.value })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                                    placeholder="correo@empresa.com"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Mensaje / Nota</label>
+                                <textarea
+                                    rows={3}
+                                    value={newLeadForm.message}
+                                    onChange={(e) => setNewLeadForm({ ...newLeadForm, message: e.target.value })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
+                                    placeholder="Notas sobre este lead..."
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button
+                                onClick={() => setNewLeadModal(false)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-gray-700"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleAddLead}
+                                className="bg-primary text-black px-4 py-2 rounded-lg font-medium hover:bg-primary/90 flex items-center gap-2"
+                            >
+                                <Save className="w-4 h-4" /> Agregar Lead
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Password Reset Modal */}
+            {passwordModal.isOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-bold text-gray-900">Nueva Contraseña Generada</h3>
+                            <button onClick={() => setPasswordModal({ isOpen: false, email: '', password: '' })}>
+                                <X className="w-5 h-5 text-gray-500 hover:text-red-500" />
+                            </button>
+                        </div>
+
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <p className="text-sm text-green-700 mb-2">
+                                Contraseña temporal para: <strong>{passwordModal.email}</strong>
+                            </p>
+                            <div className="flex items-center gap-2">
+                                <code className="flex-1 bg-white px-4 py-3 rounded-lg font-mono text-lg text-center border border-green-300 select-all">
+                                    {passwordModal.password}
+                                </code>
+                                <button
+                                    onClick={handleCopyPassword}
+                                    className={`p-3 rounded-lg transition-colors ${copied
+                                            ? 'bg-green-500 text-white'
+                                            : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                                        }`}
+                                    title="Copiar al portapapeles"
+                                >
+                                    {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <p className="text-xs text-gray-500">
+                            El usuario deberá cambiar esta contraseña en su primer inicio de sesión.
+                        </p>
+
+                        <div className="flex justify-end pt-2">
+                            <button
+                                onClick={() => setPasswordModal({ isOpen: false, email: '', password: '' })}
+                                className="bg-primary text-black px-4 py-2 rounded-lg font-medium hover:bg-primary/90"
+                            >
+                                Entendido
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteModal.isOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 space-y-4">
+                        <div className="flex items-center gap-3 text-red-600">
+                            <div className="p-2 bg-red-100 rounded-full">
+                                <AlertTriangle className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-lg font-bold">Confirmar Eliminación</h3>
+                        </div>
+
+                        <p className="text-sm text-gray-600">
+                            Estás a punto de eliminar a <strong>{deleteModal.clientName}</strong>.
+                            Esta acción no se puede deshacer.
+                        </p>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Ingresa tu contraseña de administrador:
+                            </label>
+                            <input
+                                type="password"
+                                value={adminPassword}
+                                onChange={(e) => { setAdminPassword(e.target.value); setDeleteError(''); }}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
+                                placeholder="Contraseña admin"
+                            />
+                            {deleteError && (
+                                <p className="text-xs text-red-500 mt-1">{deleteError}</p>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button
+                                onClick={() => setDeleteModal({ isOpen: false, clientId: '', clientName: '' })}
+                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-gray-700"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleDeleteConfirm}
+                                className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700"
+                            >
+                                Eliminar Cliente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

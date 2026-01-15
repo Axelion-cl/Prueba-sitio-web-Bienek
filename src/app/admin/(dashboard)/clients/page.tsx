@@ -24,7 +24,7 @@ export default function ClientsPage() {
         isOpen: false, clientId: '', clientName: ''
     });
     const [newLeadModal, setNewLeadModal] = useState(false);
-    const [newLeadForm, setNewLeadForm] = useState({ name: '', email: '', message: '' });
+    const [newLeadForm, setNewLeadForm] = useState({ name: '', email: '', message: '', company: '', phone: '' });
 
     const [adminPassword, setAdminPassword] = useState('');
     const [deleteError, setDeleteError] = useState('');
@@ -47,12 +47,14 @@ export default function ClientsPage() {
             email: newLeadForm.email,
             message: newLeadForm.message || 'Agregado manualmente por admin',
             date: new Date().toISOString().split('T')[0],
-            status: 'new'
+            status: 'new',
+            company: newLeadForm.company,
+            phone: newLeadForm.phone
         };
 
         setLeads([newLead, ...leads]);
         setNewLeadModal(false);
-        setNewLeadForm({ name: '', email: '', message: '' });
+        setNewLeadForm({ name: '', email: '', message: '', company: '', phone: '' });
     };
 
     const handleConvertLead = (lead: Lead) => {
@@ -66,7 +68,8 @@ export default function ClientsPage() {
             email: lead.email,
             registrationDate: new Date().toISOString().split('T')[0],
             status: 'active',
-            company: 'Sin empresa'
+            company: lead.company || 'Sin empresa',
+            phone: lead.phone
         };
         setClients([newClient, ...clients]);
 
@@ -162,9 +165,13 @@ export default function ClientsPage() {
                                     <tr><td colSpan={5} className="text-center py-8 text-gray-500">No hay leads pendientes.</td></tr>
                                 ) : leads.map((lead) => (
                                     <tr key={lead.id} className="hover:bg-gray-50 border-b border-gray-100 last:border-0">
-                                        <td className="px-6 py-4 font-medium text-gray-900">{lead.name}</td>
-                                        <td className="px-6 py-4 text-gray-500">
+                                        <td className="px-6 py-4">
+                                            <div className="font-medium text-gray-900">{lead.name}</div>
+                                            {lead.company && <div className="text-xs text-gray-500">{lead.company}</div>}
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-500 space-y-1">
                                             <div className="flex items-center gap-2"><Mail className="w-3 h-3" /> {lead.email}</div>
+                                            {lead.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3" /> {lead.phone}</div>}
                                         </td>
                                         <td className="px-6 py-4 text-gray-500 truncate max-w-xs" title={lead.message}>{lead.message}</td>
                                         <td className="px-6 py-4 text-gray-500">{lead.date}</td>
@@ -268,6 +275,28 @@ export default function ClientsPage() {
                                     placeholder="Nombre del potencial cliente"
                                 />
                             </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Empresa</label>
+                                    <input
+                                        type="text"
+                                        value={newLeadForm.company}
+                                        onChange={(e) => setNewLeadForm({ ...newLeadForm, company: e.target.value })}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                                        placeholder="Nombre de empresa"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                    <input
+                                        type="tel"
+                                        value={newLeadForm.phone}
+                                        onChange={(e) => setNewLeadForm({ ...newLeadForm, phone: e.target.value })}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                                        placeholder="+56 9 ..."
+                                    />
+                                </div>
+                            </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                                 <input
@@ -330,8 +359,8 @@ export default function ClientsPage() {
                                 <button
                                     onClick={handleCopyPassword}
                                     className={`p-3 rounded-lg transition-colors ${copied
-                                            ? 'bg-green-500 text-white'
-                                            : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+                                        ? 'bg-green-500 text-white'
+                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
                                         }`}
                                     title="Copiar al portapapeles"
                                 >

@@ -1,10 +1,18 @@
 'use client';
 
 import { useAuth } from '@/context/AuthContext';
-import { Users, Package, FileText, TrendingUp } from 'lucide-react';
+import { Users, Package, FileText, UserPlus } from 'lucide-react';
+import { mockLeads, mockClients, mockOrders } from '@/data/mockCRM';
+import { products } from '@/data/mockProducts';
 
 export default function AdminDashboardPage() {
     const { user } = useAuth();
+
+    // Calculate metrics
+    const leadsCount = mockLeads.length;
+    const clientsCount = mockClients.length;
+    const activeOrdersCount = mockOrders.filter(o => o.status === 'pending' || o.status === 'processing').length;
+    const productsCount = products.length;
 
     return (
         <div className="space-y-6">
@@ -18,31 +26,31 @@ export default function AdminDashboardPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
-                    title="Clientes Totales"
-                    value="45"
-                    change="+12%"
-                    icon={Users}
+                    title="Leads"
+                    value={leadsCount.toString()}
+                    change="Potenciales"
+                    icon={UserPlus}
                     color="blue"
                 />
                 <StatCard
-                    title="Productos"
-                    value="120"
-                    change="+3"
-                    icon={Package}
+                    title="Clientes Actuales"
+                    value={clientsCount.toString()}
+                    change="Registrados"
+                    icon={Users}
                     color="green"
                 />
                 <StatCard
-                    title="Cotizaciones"
-                    value="8"
-                    change="Pendientes"
+                    title="Órdenes Activas"
+                    value={activeOrdersCount.toString()}
+                    change="En proceso"
                     icon={FileText}
                     color="yellow"
                 />
                 <StatCard
-                    title="Ventas del Mes"
-                    value="$4.2M"
-                    change="+8.5%"
-                    icon={TrendingUp}
+                    title="Productos Agregados"
+                    value={productsCount.toString()}
+                    change="En catálogo"
+                    icon={Package}
                     color="purple"
                 />
             </div>
@@ -85,7 +93,7 @@ function StatCard({ title, value, change, icon: Icon, color }: any) {
             <div>
                 <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
                 <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-                <p className="text-xs text-green-600 font-medium mt-1">{change}</p>
+                <p className="text-xs text-gray-600 font-medium mt-1">{change}</p>
             </div>
             <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
                 <Icon className="w-6 h-6" />

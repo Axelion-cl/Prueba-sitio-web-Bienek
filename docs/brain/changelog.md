@@ -4,6 +4,25 @@ Este documento registra los cambios implementados durante las sesiones de desarr
 
 ---
 
+## Sesión: 2026-01-15 (Tarde) - Dashboard, Layout & CRM UI
+
+### Dashboard & Layout
+- **Segregación de Layouts**: Implementación de Route Groups `(public)` vs `admin`.
+    - **Resultado**: El Panel de Administración ya no hereda Header/Footer públicos.
+- **Dashboard Metrics (`/admin/dashboard`)**:
+    - **Reactividad**: Métricas reales conectadas a `mockCRM` y `mockProducts`.
+    - **KPIs**: Leads, Clientes Actuales, Órdenes Activas, Productos.
+    - **Limpieza**: Eliminación de tarjeta "Ventas del Mes".
+
+### Refinamientos CRM (`/admin/clients`)
+- **Acciones Manuales**: Botón **"Nuevo Lead"** con formulario modal.
+- **Seguridad UI**:
+    - **Eliminación**: Modal con confirmación de contraseña de admin.
+    - **Contraseñas**: Copiado al portapapeles en generación de credenciales.
+- **Fix Técnico**: Uso correcto de `useParams` para detalle de órdenes.
+
+---
+
 ## Sesión: 2026-01-14/15 (Admin Panel & CRM)
 
 ### Infraestructura Admin (`/admin`)

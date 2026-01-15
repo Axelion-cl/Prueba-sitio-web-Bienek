@@ -5,6 +5,8 @@ export interface Lead {
     message: string;
     date: string;
     status: 'new' | 'contacted' | 'converted';
+    phone?: string;
+    company?: string;
 }
 
 export interface Client {
@@ -27,7 +29,7 @@ export interface OrderItem {
 export interface Order {
     id: string;
     clientId: string;
-    clientName: string; // Helper for display
+    clientName: string;
     date: string;
     total: number;
     status: 'pending' | 'processing' | 'completed' | 'cancelled';
@@ -41,7 +43,9 @@ export const mockLeads: Lead[] = [
         email: 'juan.perez@empresa.com',
         message: 'Hola, me interesa cotizar 50 dispensadores de toalla.',
         date: '2026-01-14',
-        status: 'new'
+        status: 'new',
+        company: 'Empresa A',
+        phone: '+56 9 1234 5678'
     },
     {
         id: 'lead-2',
@@ -49,7 +53,9 @@ export const mockLeads: Lead[] = [
         email: 'maria.g@clinica.cl',
         message: 'Necesito insumos médicos por mayor. ¿Tienen catálogo?',
         date: '2026-01-13',
-        status: 'contacted'
+        status: 'contacted',
+        company: 'Clínica Sur',
+        phone: '+56 9 8765 4321'
     },
     {
         id: 'lead-3',
@@ -57,7 +63,9 @@ export const mockLeads: Lead[] = [
         email: 'cruiz@limpieza.cl',
         message: 'Busco proveedor de químicos industriales.',
         date: '2026-01-10',
-        status: 'new'
+        status: 'new',
+        company: 'Servicios de Limpieza Ruiz',
+        phone: '+56 9 1122 3344'
     }
 ];
 
@@ -86,7 +94,8 @@ export const mockClients: Client[] = [
         email: 'obras@valdivia.cl',
         registrationDate: '2026-01-02',
         status: 'active',
-        company: 'Constructora Valdivia Ltda'
+        company: 'Constructora Valdivia Ltda',
+        phone: '+56 9 5555 6666'
     }
 ];
 

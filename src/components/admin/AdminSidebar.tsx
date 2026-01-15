@@ -20,7 +20,6 @@ const menuItems = [
     { name: 'Productos', href: '/admin/products', icon: Package },
     { name: 'Etiquetas', href: '/admin/tags', icon: Tag },
     { name: 'Clientes', href: '/admin/clients', icon: Users },
-    { name: 'Cotizaciones', href: '/admin/quotes', icon: FileText },
 ];
 
 export function AdminSidebar() {

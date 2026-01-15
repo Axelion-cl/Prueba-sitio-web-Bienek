@@ -54,24 +54,30 @@
         - [x] Mis Productos (Carrito) <!-- id: 48 -->
         - [x] Mis Ordenes (Historial) <!-- id: 49 -->
         - [x] Mi Perfil (Datos y Password) <!-- id: 50 -->
-- [x] **Carrito (CartContext + Contador Header)**
+- [x] **Carrito (CartContext + Contador Header)** <!-- id: 81 -->
 
-#### Fase 6: Internacionalización (i18n) - Selector de Idioma (Faltan algúnos detalles.)
-- [x] Implementar cambio de idioma Español/Inglés funcional
-    - [x] Selector en header (barra negra) conectado a LanguageContext
-    - [ ] Todo el texto del sitio (Header, Footer, Home, Auth, Dashboard, ProductCards) cambia dinámicamente
-    - [x] Persistir preferencia de idioma (localStorage)
+#### Fase 6: Internacionalización (i18n) - Selector de Idioma (Faltan algúnos detalles.) <!-- id: 76 -->
+- [x] Implementar cambio de idioma Español/Inglés funcional <!-- id: 77 -->
+    - [x] Selector en header (barra negra) conectado a LanguageContext <!-- id: 78 -->
+    - [ ] Todo el texto del sitio (Header, Footer, Home, Auth, Dashboard, ProductCards) cambia dinámicamente <!-- id: 79 -->
+    - [x] Persistir preferencia de idioma (localStorage) <!-- id: 80 -->
 
 #### Fase 7: Administración (CRM Interno) <!-- id: 34 -->
 - [x] **Seguridad Admin** (Implementado con AdminGuard y layout dedicado) <!-- id: 35 -->
-    - [x] Login Admin y Middleware de Protección
+    - [x] Login Admin y Middleware de Protección <!-- id: 89 -->
 - [/] **Gestión de Catálogo** <!-- id: 63 -->
     - [x] CRUD Productos (Listado, Búsqueda, Edición) <!-- id: 36 -->
-    - [x] Carga Masiva de Productos (Wizard de Importación)
-    - [x] Gestión de Etiquetas (Sectores, Familias) - Crear/Asociar <!-- id: 37 -->
-- [ ] **Gestión de Clientes (CRM)** <!-- id: 38 -->
-    - [ ] "Convertidor de Leads": Lista de Contactos -> Crear Usuario <!-- id: 52 -->
-        - [ ] Generador de Credenciales <!-- id: 54 -->
-    - [ ] Gestión de Usuarios (Editar/Eliminar) <!-- id: 55 -->
-- [ ] **Gestión de Operaciones** <!-- id: 39 -->
-    - [ ] Visor de Ordenes de Clientes <!-- id: 57 -->
+    - [x] Carga Masiva de Productos (Wizard de Importación) <!-- id: 82 -->
+    - [x] Gestión de Etiquetas (Muli-Select, CRUD independiente) <!-- id: 37 -->
+        - [x] Soporte para Distintivos (Badges: Oferta, Nuevo, etc.) <!-- id: 83 -->
+- [x] **Gestión de Clientes (CRM)** <!-- id: 38 -->
+    - [x] Listado de Clientes <!-- id: 52 -->
+        - [x] Lista de potenciales clientes (personas que han llenado formulario de "Contactanos") <!-- id: 84 -->
+            - [x] Convertir a Cliente Actual <!-- id: 85 -->
+                - [x] Botón para Generar Credenciales (Email del cliente + Contraseña temporal) <!-- id: 54 -->
+        - [x] Lista de clientes actuales (personas que el admin a registrado desde la lista de potenciales clientes o manualmente) <!-- id: 86 -->
+            - [x] Gestión de Usuarios (Editar/Eliminar) <!-- id: 55 -->
+            - [x] Botón para resetear contraseña (genera una nueva contraseña temporal y la envía al correo del cliente). <!-- id: 87 -->
+            - [x] Botón para acceder a lista de Ordenes de Cliente por fecha de creación <!-- id: 57 -->
+                - [x] Al hacer clic en una orden, te lleva a una pagina que muestra una lista de los productos asociados a esa orden.  <!-- id: 88 -->
+

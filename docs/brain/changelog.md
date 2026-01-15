@@ -4,6 +4,44 @@ Este documento registra los cambios implementados durante las sesiones de desarr
 
 ---
 
+## Sesión: 2026-01-14/15 (Admin Panel & CRM)
+
+### Infraestructura Admin (`/admin`)
+- **Seguridad**: Implementado `AdminGuard` para protección de rutas y layout dedicado con Sidebar oscuro.
+- **Autenticación**: Login funcional simulado (`admin@bienek.cl`) con redirección inteligente.
+
+### Gestión de Productos
+- **CRUD Completo**: Listado con búsqueda, Creación y Edición de productos.
+- **Carga Masiva (`/admin/products/import`)**: 
+    - Wizard de 3 pasos (Subir, Validar, Finalizar).
+    - Soporte híbrido: Excel para datos + ZIP para imágenes.
+- **Formulario Inteligente**: Implementado componente `MultiSelect` para asignación múltiple de Sectores, Familias y Marcas.
+
+### Gestión de Etiquetas (`/admin/tags`)
+- **Refactor de Datos**: Desacoplamiento total de Sectores y Familias (ahora etiquetas independientes).
+- **CRUD**: Panel unificado con pestañas para Crear/Editar/Eliminar Sectores, Familias y Marcas.
+- **Nuevo**: Agregada pestaña "Distintivos" para gestionar etiquetas como "Más Vendidos", "Oferta", etc.
+- **Persistencia**: Estado local mockeado funcional para demos rápidas.
+
+### Internacionalización (i18n)
+- **Motor**: Implementado `LanguageContext` global.
+- **Cobertura**: Traducción completa de Header, Footer, Login, Mi Cuenta y Home.
+- **Persistencia**: Preferencia de usuario guardada en `localStorage`.
+
+### Gestión de Clientes (CRM) (`/admin/clients`)
+- **Pipeline de Conversión**:
+    - Pestaña **"Potenciales"** (Leads) con datos de contacto.
+    - Acción **"Convertir"** que transfiere Lead a Cliente y simula envío de credenciales.
+- **Gestión de Clientes Actuales**:
+    - Listado con estado (Activo/Inactivo).
+    - Acciones Rápidas: Reset Password, Editar, Eliminar.
+- **Historial de Órdenes (`/admin/clients/[id]/orders`)**:
+    - Vista detallada de compras por cliente.
+    - Desglose de productos por orden (Acordeón).
+    - Solucionado bug de parámetros en Next.js 15 (`useParams`).
+
+---
+
 ## Sesión: 2026-01-12 (Página de Producto)
 
 ### Página Detalle de Producto (`/productos/[id]`)

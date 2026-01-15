@@ -56,7 +56,13 @@ Objetivo: Finalizar la página de producto y dotar al sitio de capacidades de b�
     - **Mis Ordenes:** Historial de pedidos.
     - **Perfil:** Actualización de datos y password.
 
-## 6. Fase 6: Administración (CRM Interno)
+## 6. Fase 6: Internacionalización (i18n)
+**Objetivo:** Implementar soporte bilingüe (Español/Inglés).
+- **Selector de Idioma:** Header Bar (Negra).
+- **Tecnología:** `next-intl` o Contexto propio (decisión Frontend).
+- **Persistencia:** LocalStorage.
+
+## 7. Fase 7: Administración (CRM Interno)
 **Objetivo:** Control total del negocio y gestión de clientes.
 - **Gestión de Leads:**
     - Listar envíos del formulario "Contáctenos".

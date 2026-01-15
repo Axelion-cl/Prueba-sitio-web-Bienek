@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, X, Upload } from 'lucide-react';
 import Image from 'next/image';
 import { sectors } from '@/data/sectors';
-import { families, getFamiliesBySector } from '@/data/families';
+import { families } from '@/data/families';
 import { brands } from '@/data/brands';
+import { badges } from '@/data/badges';
+import { MultiSelect } from '@/components/ui/MultiSelect';
 
 interface ProductFormProps {
     initialData?: any;
@@ -19,33 +21,13 @@ export function ProductForm({ initialData, isEditing = false }: ProductFormProps
         name: initialData?.name || '',
         sku: initialData?.sku || '',
         price: initialData?.price || '',
-        brand: initialData?.brand || '',
-        sectorId: initialData?.sectorIds?.[0] || '',
-        familyId: initialData?.familyId || '',
+        brandIds: initialData?.brand ? [initialData.brand] : (initialData?.brandIds || []),
+        sectorIds: initialData?.sectorIds || [],
+        familyIds: initialData?.familyId ? [initialData.familyId] : (initialData?.familyIds || []),
+        badges: initialData?.badges || [],
         description: initialData?.description || '',
         image: initialData?.images?.[0] || '/assets/images/solutions/limpieza-general.png'
     });
-
-    const [availableFamilies, setAvailableFamilies] = useState(
-        initialData?.sectorIds?.[0] ? getFamiliesBySector(initialData.sectorIds[0]) : []
-    );
-
-    useEffect(() => {
-        if (formData.sectorId) {
-            setAvailableFamilies(getFamiliesBySector(formData.sectorId));
-        } else {
-            setAvailableFamilies([]);
-        }
-    }, [formData.sectorId]);
-
-    const handleSectorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newSectorId = e.target.value;
-        setFormData({
-            ...formData,
-            sectorId: newSectorId,
-            familyId: '' // Reset family when sector changes
-        });
-    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -54,6 +36,12 @@ export function ProductForm({ initialData, isEditing = false }: ProductFormProps
         alert('Producto guardado correctamente (Mock)');
         router.push('/admin/products');
     };
+
+    // Options mapping
+    const sectorOptions = sectors.map(s => ({ label: s.title, value: s.id }));
+    const familyOptions = families.map(f => ({ label: f.name, value: f.id }));
+    const brandOptions = brands.map(b => ({ label: b.name, value: b.name })); // Name as ID for brands
+    const badgeOptions = badges.map(b => ({ label: b.name, value: b.name })); // Using Name as value to match current Product interface
 
     return (
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -98,50 +86,40 @@ export function ProductForm({ initialData, isEditing = false }: ProductFormProps
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Sector (Categoría)</label>
-                            <select
-                                required
-                                value={formData.sectorId}
-                                onChange={handleSectorChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
-                            >
-                                <option value="">Seleccionar Sector...</option>
-                                {sectors.map(s => (
-                                    <option key={s.id} value={s.id}>{s.title}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Familia</label>
-                            <select
-                                value={formData.familyId}
-                                onChange={(e) => setFormData({ ...formData, familyId: e.target.value })}
-                                disabled={!formData.sectorId}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none disabled:bg-gray-100 disabled:text-gray-400"
-                            >
-                                <option value="">Seleccionar Familia...</option>
-                                {availableFamilies.map(f => (
-                                    <option key={f.id} value={f.id}>{f.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
+                    <div className="space-y-4 pt-2">
+                        <h3 className="text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2">Etiquetas y Clasificación</h3>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Marca</label>
-                        <select
-                            required
-                            value={formData.brand}
-                            onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
-                        >
-                            <option value="">Seleccionar marca...</option>
-                            {brands.map(b => (
-                                <option key={b.name} value={b.name}>{b.name}</option>
-                            ))}
-                        </select>
+                        <MultiSelect
+                            label="Sectores (Categorías)"
+                            options={sectorOptions}
+                            selected={formData.sectorIds}
+                            onChange={(vals) => setFormData({ ...formData, sectorIds: vals })}
+                            placeholder="Selecciona uno o más sectores..."
+                        />
+
+                        <MultiSelect
+                            label="Familias"
+                            options={familyOptions}
+                            selected={formData.familyIds}
+                            onChange={(vals) => setFormData({ ...formData, familyIds: vals })}
+                            placeholder="Selecciona familias..."
+                        />
+
+                        <MultiSelect
+                            label="Marcas"
+                            options={brandOptions}
+                            selected={formData.brandIds}
+                            onChange={(vals) => setFormData({ ...formData, brandIds: vals })}
+                            placeholder="Selecciona marcas..."
+                        />
+
+                        <MultiSelect
+                            label="Distintivos (Badges)"
+                            options={badgeOptions}
+                            selected={formData.badges}
+                            onChange={(vals) => setFormData({ ...formData, badges: vals })}
+                            placeholder="Selecciona distintivos..."
+                        />
                     </div>
 
                     <div>

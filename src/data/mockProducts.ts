@@ -1,24 +1,24 @@
 import { sectors } from "./sectors";
 import { brands } from "./brands";
-import { families, getFamiliesBySector } from "./families";
+import { families } from "./families";
+import { badges as badgeData } from "./badges";
 
 export interface Product {
     id: string;
     name: string;
     brand: string;
+    brandIds: string[]; // New: Multi-brand support
     brandLogo: string;
-    images: string[]; // Updated from single image to array
-    description: string; // New field
-    specs: Record<string, string>; // New field
-    relatedProducts: string[]; // New field
+    images: string[];
+    description: string;
+    specs: Record<string, string>;
+    relatedProducts: string[];
     sectorIds: string[];
-    familyId?: string; // New field for Family linkage
+    familyIds: string[]; // New: Multi-family support
     price: number;
     sku: string;
-    badges: string[]; // New field
+    badges: string[];
 }
-
-// brands moved to brands.ts
 
 const productTypes = [
     "Detergente Industrial", "Desinfectante Concentrado", "Papel Higiénico Jumbo",
@@ -45,21 +45,28 @@ export const products: Product[] = Array.from({ length: 120 }).map((_, i) => {
         sectorIds.push(sectors[(sectorIndex + 1) % sectors.length].id);
     }
 
-    // Assign a family based on the primary sector
-    const sectorFamilies = getFamiliesBySector(sectorIds[0]);
-    const familyId = sectorFamilies.length > 0 ? sectorFamilies[i % sectorFamilies.length].id : undefined;
+    // Assign random familyIds (1 or 2)
+    const randomFamilyIndex = i % families.length;
+    const familyIds = [families[randomFamilyIndex].id];
+    if (i % 4 === 0) {
+        familyIds.push(families[(randomFamilyIndex + 1) % families.length].id);
+    }
 
     // Deterministic random-like values
     const hasDiscount = i % 5 === 0;
     const isBestSeller = i % 7 === 0;
-    const badges = [];
-    if (hasDiscount) badges.push("En Promoción");
-    if (isBestSeller) badges.push("Más Vendidos");
+    const isNew = i % 11 === 0;
+
+    const currentBadges = [];
+    if (hasDiscount) currentBadges.push(badgeData.find(b => b.id === 'promocion')?.name || 'En Promoción');
+    if (isBestSeller) currentBadges.push(badgeData.find(b => b.id === 'mas-vendido')?.name || 'Más Vendidos');
+    if (isNew) currentBadges.push(badgeData.find(b => b.id === 'nuevo')?.name || 'Nuevo');
 
     return {
         id: `PROD-${1000 + i}`,
         name: `${type} ${brand.name} ${100 + i}`, // e.g., "Detergente Industrial 3M 100"
         brand: brand.name,
+        brandIds: [brand.name],
         brandLogo: brand.logo,
         images: [
             "/assets/images/solutions/limpieza-general.png", // Main image
@@ -77,10 +84,10 @@ export const products: Product[] = Array.from({ length: 120 }).map((_, i) => {
         },
         relatedProducts: [], // Populated below to avoid circular dependency issues during creation
         sectorIds: sectorIds,
-        familyId: familyId,
+        familyIds: familyIds,
         price: 5000 + (i * 150),
         sku: `SKU-${50000 + i}`,
-        badges: badges
+        badges: currentBadges
     };
 });
 

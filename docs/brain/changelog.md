@@ -4,6 +4,27 @@ Este documento registra los cambios implementados durante las sesiones de desarr
 
 ---
 
+## Sesión: 2026-01-16 (Mañana) - UI/UX Admin Dashboard Improvements
+
+### Gestión de Etiquetas (`/admin/tags`)
+- **Badge Color Picker**: Reemplazado el input manual de texto por un **Selector Visual de Colores** (9 presets).
+- **Mejora de Tabla**: Reemplazada la columna técnica "Color" por **"Última Edición"** (fecha automática).
+- **Eliminación Segura**: Implementado **Modal de Confirmación Personalizado** para borrar etiquetas, reemplazando `window.confirm`.
+
+### Gestión de Clientes / CRM (`/admin/clients`)
+- **Conversión de Leads**:
+    - **Fix UI**: Reemplazado `window.confirm` por **Modal de Confirmación Personalizado**.
+    - **Flujo**: Verificada la promoción correcta de Lead -> Cliente y la generación de contraseña temporal.
+
+### Familias Destacadas (`/admin/tags` & Home)
+- **Admin UI**: Nuevo botón de acción "Lista" en Sectores que abre un **Modal Dedicado** para gestionar familias destacadas.
+- **Home Page**:
+    - **Grid Dinámico**: Las tarjetas de solución ahora muestran las familias configuradas en el admin.
+    - **Navegación Inteligente**: Al hacer clic en una familia, redirige a la página de soluciones con el filtro activo (`?family=id`).
+    - **Fix Técnico**: Solucionado error de hidratación (Link anidado) refactorizando `SolutionsGrid` a Client Component.
+
+---
+
 ## Sesión: 2026-01-15 (Tarde) - Dashboard, Layout & CRM UI
 
 ### Dashboard & Layout

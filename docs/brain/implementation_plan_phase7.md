@@ -41,6 +41,18 @@ Establish a secure and separate environment for the internal CRM. Implement "Rol
 - **Convertidor de Leads**:
     - Generador de Credenciales (Nested).
 
+### Tag Management Extensions
+#### [NEW] [FeaturedFamiliesSelector.tsx](file:///d:/2. Otros/Github/Prueba Sitio web Bienek/src/components/admin/tags/FeaturedFamiliesSelector.tsx)
+- **Contexto**: En la gestión de Sectores (`/admin/tags?tab=sectores`).
+- **Funcionalidad**:
+    - Al editar un Sector, mostrar un selector "Familias Destacadas" (Máx 4).
+    - Permite buscar y seleccionar etiquetas de tipo "Familia".
+    - **Visual**: Muestra las 4 seleccionadas con opción de eliminar/reordenar.
+- **Frontend Impact**:
+    - El componente `SolutionsGrid` (Home) debe leer esta info.
+    - Hover en tarjeta de Sector -> Muestra las 4 familias.
+    - Clic en familia -> Navega a `/soluciones/[sector-slug]?family=[family-slug]`.
+
 ## Verification Plan
 1. Access `/admin/dashboard` as guest -> Redirect to `/admin/login`.
 2. Login as `admin@bienek.cl`.

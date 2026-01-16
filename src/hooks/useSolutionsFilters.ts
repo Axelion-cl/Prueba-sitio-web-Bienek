@@ -1,14 +1,31 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Product } from '@/data/mockProducts';
 
 export function useSolutionsFilters(products: Product[]) {
+    const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState("");
-    // Using Set for efficient lookup of selected brands
+
+    // Using Set for efficient lookup of selected brands and families
     const [selectedBrands, setSelectedBrands] = useState<Set<string>>(new Set());
+    const [selectedFamilies, setSelectedFamilies] = useState<Set<string>>(new Set());
+
+    // Initialize from URL params
+    useEffect(() => {
+        const familyParam = searchParams.get('family');
+        if (familyParam) {
+            setSelectedFamilies(new Set([familyParam]));
+        }
+    }, [searchParams]);
 
     const availableBrands = useMemo(() => {
         const brands = new Set(products.map(p => p.brand));
         return Array.from(brands).sort();
+    }, [products]);
+
+    const availableFamilies = useMemo(() => {
+        const families = new Set(products.flatMap(p => p.familyIds || []));
+        return Array.from(families).sort();
     }, [products]);
 
     const toggleBrand = (brand: string) => {
@@ -19,6 +36,16 @@ export function useSolutionsFilters(products: Product[]) {
             newSelected.add(brand);
         }
         setSelectedBrands(newSelected);
+    };
+
+    const toggleFamily = (familyId: string) => {
+        const newSelected = new Set(selectedFamilies);
+        if (newSelected.has(familyId)) {
+            newSelected.delete(familyId);
+        } else {
+            newSelected.add(familyId);
+        }
+        setSelectedFamilies(newSelected);
     };
 
     const filteredProducts = useMemo(() => {
@@ -36,9 +63,25 @@ export function useSolutionsFilters(products: Product[]) {
                 return false;
             }
 
+            // 3. Family Filter (Multiple checkboxes)
+            // Check if product belongs to AT LEAST ONE of the selected families
+            if (selectedFamilies.size > 0) {
+                const productFamilies = product.familyIds || [];
+                const hasMatch = productFamilies.some(id => selectedFamilies.has(id));
+                if (!hasMatch) return false;
+            }
+
             return true;
         });
-    }, [products, searchQuery, selectedBrands]);
+    }, [products, searchQuery, selectedBrands, selectedFamilies]);
+
+    const clearAllFilters = () => {
+        setSearchQuery("");
+        setSelectedBrands(new Set());
+        setSelectedFamilies(new Set());
+    };
+
+    const hasActiveFilters = searchQuery.length > 0 || selectedBrands.size > 0 || selectedFamilies.size > 0;
 
     return {
         searchQuery,
@@ -46,6 +89,11 @@ export function useSolutionsFilters(products: Product[]) {
         selectedBrands,
         toggleBrand,
         availableBrands,
-        filteredProducts
+        selectedFamilies,
+        toggleFamily,
+        availableFamilies,
+        filteredProducts,
+        clearAllFilters,
+        hasActiveFilters
     };
 }

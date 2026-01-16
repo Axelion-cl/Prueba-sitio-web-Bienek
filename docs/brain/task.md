@@ -12,6 +12,8 @@
     - [x] Crear prompts optimizados para Agentes (Frontend/Datos) <!-- id: 10 -->
 - [x] Documentar Plan Maestro y solicitar aprobación <!-- id: 8 -->
 - [x] Configurar Cerebro del Proyecto (Docs centralizados) <!-- id: 11 -->
+- [x] Auditoría de Infraestructura y Límites (Vercel, Supabase, Resend) <!-- id: 91 -->
+- [x] Investigación de Alternativas de Hosting Comercial <!-- id: 92 -->
 
 # Progreso de Construcción (Auditoría: 09/01)
 
@@ -70,14 +72,15 @@
     - [x] Carga Masiva de Productos (Wizard de Importación) <!-- id: 82 -->
     - [x] Gestión de Etiquetas (Muli-Select, CRUD independiente) <!-- id: 37 -->
         - [x] Soporte para Distintivos (Badges: Oferta, Nuevo, etc.) <!-- id: 83 -->
+        - [x] Configuración "Familias Destacadas" por Sector (Hover Home) <!-- id: 93 -->
 - [x] **Gestión de Clientes (CRM)** <!-- id: 38 -->
     - [x] Listado de Clientes <!-- id: 52 -->
         - [x] Lista de potenciales clientes (personas que han llenado formulario de "Contactanos") <!-- id: 84 -->
-            - [x] Convertir a Cliente Actual <!-- id: 85 -->
-                - [x] Botón para Generar Credenciales (Email del cliente + Contraseña temporal) <!-- id: 54 -->
+            - [ ] Convertir a Cliente Actual <!-- id: 85 -->
+                - [ ] Botón para Generar Credenciales (Email del cliente + Contraseña temporal) <!-- id: 54 -->
+                - [ ] Integración Email API (Resend) para envío de plantilla corporativa <!-- id: 90 -->
         - [x] Lista de clientes actuales (personas que el admin a registrado desde la lista de potenciales clientes o manualmente) <!-- id: 86 -->
             - [x] Gestión de Usuarios (Editar/Eliminar) <!-- id: 55 -->
             - [x] Botón para resetear contraseña (genera una nueva contraseña temporal y la envía al correo del cliente). <!-- id: 87 -->
             - [x] Botón para acceder a lista de Ordenes de Cliente por fecha de creación <!-- id: 57 -->
                 - [x] Al hacer clic en una orden, te lleva a una pagina que muestra una lista de los productos asociados a esa orden.  <!-- id: 88 -->
-

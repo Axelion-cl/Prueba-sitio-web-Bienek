@@ -18,7 +18,12 @@ export function SolutionsLayout({ initialProducts }: SolutionsLayoutProps) {
         selectedBrands,
         toggleBrand,
         availableBrands,
-        filteredProducts
+        selectedFamilies,
+        toggleFamily,
+        availableFamilies,
+        filteredProducts,
+        clearAllFilters,
+        hasActiveFilters
     } = useSolutionsFilters(initialProducts);
 
     return (
@@ -27,11 +32,19 @@ export function SolutionsLayout({ initialProducts }: SolutionsLayoutProps) {
 
                 {/* 1. Sidebar (Desktop & Mobile Stacked) */}
                 <div className="lg:block">
-                    <SidebarFilters
-                        availableBrands={availableBrands}
-                        selectedBrands={selectedBrands}
-                        onToggleBrand={toggleBrand}
-                    />
+                    {/* 1. Sidebar (Desktop & Mobile Stacked) */}
+                    <div className="lg:block">
+                        <SidebarFilters
+                            availableBrands={availableBrands}
+                            selectedBrands={selectedBrands}
+                            onToggleBrand={toggleBrand}
+                            availableFamilies={availableFamilies}
+                            selectedFamilies={selectedFamilies}
+                            onToggleFamily={toggleFamily}
+                            onClearFilters={clearAllFilters}
+                            hasActiveFilters={hasActiveFilters}
+                        />
+                    </div>
                 </div>
 
                 {/* 2. Main Content */}

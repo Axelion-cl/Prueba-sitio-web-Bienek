@@ -66,7 +66,9 @@ Objetivo: Finalizar la página de producto y dotar al sitio de capacidades de b�
 **Objetivo:** Control total del negocio y gestión de clientes.
 - **Gestión de Leads:**
     - Listar envíos del formulario "Contáctenos".
-    - **Acción Clave:** "Convertir Lead a Usuario" -> Genera usuario en Supabase Auth y envía credenciales.
+    - **Acción Clave:** "Convertir Lead a Usuario".
+        - Genera usuario en Supabase Auth.
+        - **Sistema de Notificaciones:** Integra servicio de email (ej: **Resend** o **SendGrid**) para enviar credenciales temporales con plantillas HTML corporativas ("Bonitas").
 - **Gestión de Etiquetas:** CRUD completo y asignación masiva.
 - **Gestión de Productos:** Formulario y Carga CSV.
 - **Gestión de Ordenes:** Visualización de pedidos de clientes.

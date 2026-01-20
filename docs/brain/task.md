@@ -14,6 +14,10 @@
 - [x] Configurar Cerebro del Proyecto (Docs centralizados) <!-- id: 11 -->
 - [x] Auditoría de Infraestructura y Límites (Vercel, Supabase, Resend) <!-- id: 91 -->
 - [x] Investigación de Alternativas de Hosting Comercial <!-- id: 92 -->
+- [x] Configuración de Estrategia Híbrida (Static Export + Supabase Cloud) <!-- id: 94 -->
+- [x] Implementar Puente PHP para Servicios de Backend (Resend Email) <!-- id: 95 -->
+- [x] Investigación de Backend en cPanel (Alternativa Supabase) <!-- id: 94 -->
+- [x] Definición de Esquema SQL y RLS (Supabase) <!-- id: 103 -->
 
 # Progreso de Construcción (Auditoría: 09/01)
 
@@ -78,9 +82,19 @@
         - [x] Lista de potenciales clientes (personas que han llenado formulario de "Contactanos") <!-- id: 84 -->
             - [ ] Convertir a Cliente Actual <!-- id: 85 -->
                 - [ ] Botón para Generar Credenciales (Email del cliente + Contraseña temporal) <!-- id: 54 -->
-                - [ ] Integración Email API (Resend) para envío de plantilla corporativa <!-- id: 90 -->
+                - [ ] Integración Email mediante PHP Bridge (SMTP Mundo Hosting) para envío de plantilla corporativa <!-- id: 90 -->
         - [x] Lista de clientes actuales (personas que el admin a registrado desde la lista de potenciales clientes o manualmente) <!-- id: 86 -->
             - [x] Gestión de Usuarios (Editar/Eliminar) <!-- id: 55 -->
             - [x] Botón para resetear contraseña (genera una nueva contraseña temporal y la envía al correo del cliente). <!-- id: 87 -->
             - [x] Botón para acceder a lista de Ordenes de Cliente por fecha de creación <!-- id: 57 -->
                 - [x] Al hacer clic en una orden, te lleva a una pagina que muestra una lista de los productos asociados a esa orden.  <!-- id: 88 -->
+<br>
+
+#### Fase 8: Autonomía y Persistencia Real (De Mocks a DB) <!-- id: 96 -->
+- [ ] Sincronización de CRUD de Productos con Supabase (vía Cliente Directo) <!-- id: 97 -->
+- [ ] Implementación de Storage para imágenes de productos (SOLO IMÁGENES) <!-- id: 101 -->
+- [ ] Activación de Importador Masivo con persistencia real <!-- id: 98 -->
+- [ ] Conexión de "Familias Destacadas" y Sectores a la DB <!-- id: 99 -->
+- [ ] Sincronización de CRM (Leads/Clientes) con almacenamiento real <!-- id: 100 -->
+- [ ] Implementación de Puente PHP para Email (Última prioridad) <!-- id: 95 -->
+- [ ] Documentación de Autonomía para el Cliente (Manual de Uso Admin) <!-- id: 102 -->

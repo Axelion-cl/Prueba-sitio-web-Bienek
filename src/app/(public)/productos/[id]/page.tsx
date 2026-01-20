@@ -11,7 +11,7 @@ export async function generateStaticParams() {
     }));
 }
 
-export const dynamicParams = true; // Allow new products to be generated on demand if not pre-rendered
+export const dynamicParams = false; // Required for static export
 
 interface PageProps {
     params: Promise<{ id: string }>;

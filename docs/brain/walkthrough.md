@@ -1,52 +1,44 @@
-# Walkthrough: Página de Detalle de Producto
+# Walkthrough: Backend Migration Setup
 
-Se ha implementado la página de detalle de producto dinámica (`/productos/[id]`) con estrategia ISR y todos los componentes requeridos.
+## Cambios Realizados
 
-## Características Implementadas
+### 1. Base de Datos Supabase (`supabase/schema.sql`)
+Se ha generado un script SQL completo que define la estructura de datos para reemplazar los mocks locales.
+- **Tablas:** `sectors`, `families`, `products`, `articles`, `leads`, `clients`, `orders`.
+- **Seguridad (RLS):**
+    - **Público:** Catálogo de productos y blog.
+    - **Privado (Admin/Service Role):** Gestión de usuarios, leads y escrituras en general.
+    - **Cliente:** Acceso a sus propios datos (perfil, órdenes).
+- **Storage:** Configuración del bucket `products-images`.
 
-### 1. Ruta Dinámica con ISR
-- **Ruta**: `src/app/productos/[id]/page.tsx`
-- **Generación**: Se generan estáticamente 120 productos mock al momento del build (`generateStaticParams`).
-- **Performance**: Carga instantánea para todos los productos pre-renderizados.
+### 2. PHP Bridge (`public/api/bridge.php`)
+Se ha creado el "puente" para ejecutar lógica de servidor en el hosting cPanel.
+- **Ubicación:** `/public/api/bridge.php` (se desplegará en la raíz del dominio).
+- **Funciones:**
+    - `send_email`: Envío de correos transaccionales usando la función `mail()` de PHP (compatible con cPanel).
+    - `admin_create_user`: Proxy seguro para crear usuarios en Supabase Auth sin exponer la Service Key.
+- **Seguridad:** Protegido mediante `X-API-Key`.
 
-### 2. Galería de Productos (`ProductGallery`)
-- Visualización de imagen principal en alta calidad.
-- **Ajuste de Diseño**: Aspect ratio rectangular (4:3) para optimizar el espacio vertical.
-- Miniaturas navegables.
-- Interacción de cambio de imagen instantánea.
+## Verificación
 
-### 3. Información del Producto (`ProductInfo`)
-- **Título**: Encabezado principal.
-- **Marca**: Elemento visual destacado debajo del título. Logo ajustado a `h-10 w-28` y etiqueta "MARCA" en `text-2xl` con `gap-[10px]` para mayor prominencia y equilibrio.
-- **SKU**: Ubicado debajo de la marca.
-- **Layout**: Descripción y Especificaciones Técnicas integradas en la columna derecha para optimizar espacio.
-- **Acciones**: Botón "Agregar" que cambia de estado a "Agregado".
+### Cómo probar el Script SQL
+1. Ir al Dashboard de Supabase -> SQL Editor.
+2. Copiar el contenido de `supabase/schema.sql`.
+3. Ejecutar ("Run").
+4. Verificar que las tablas aparecen en el "Table Editor".
 
-### 4. Productos Relacionados (`RelatedProducts`)
-- **Carrusel Animado**: Implementado con `embla-carousel-react`.
-- **Navegación Optimizada**:
-    - **Avance**: Desplazamiento de **2 productos** por clic para una navegación más ágil.
-    - **Flechas**: Posicionadas a los extremos izquierdo y derecho (`lg:-left-[58px]`, `lg:-right-[58px]`) con mayor separación (aprox 60px) del contenedor principal.
-- **Espaciado Optimizado**: Reducción de márgenes superior e inferior para un diseño más compacto.
-- **Tarjetas Consistentes**: Diseño idéntico a páginas de soluciones (Botones Amarillo y Verde), completamente visibles.
-
-## Verificación Visual
-
-### Vista Principal (Layout Final)
-Diseño optimizado con imagen rectangular (4:3) e información concentrada a la derecha. Marca destacada con ajuste tipográfico final.
-![Vista Principal Ajustada](/product_detail_brand_sku_check_1768231453307.png)
-
-### Carrusel Relacionados (Diseño Final)
-Flechas separadas del contenido y diseño compacto.
-![Carrusel Vista Final](/carousel_slid_view_final_1768233644817.png)
-
-## Cambios en Datos Mock
-Se actualizó `src/data/mockProducts.ts` para incluir:
-- Array de imágenes (`images: string[]`)
-- Descripción larga (`description`)
-- Especificaciones (`specs`)
-- IDs de relacionados (`relatedProducts`)
-- Badges (`badges`)
-
-## Próximos Pasos
-- Implementar **Buscador y Filtros Avanzados**.
+### Cómo probar el PHP Bridge
+1. Subir el archivo `public/api/bridge.php` a la carpeta `public_html/api/` en Mundo Hosting.
+2. Hacer un request POST con Postman/Curl:
+```bash
+curl -X POST https://tu-dominio.com/api/bridge.php \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: CAMBIAR_ESTO_POR_UN_SECRET_SEGURO_EN_PRODUCCION" \
+  -d '{
+    "action": "send_email",
+    "to": "prueba@bienek.cl",
+    "subject": "Test Bridge",
+    "html": "<h1>Hola desde el Bridge</h1>"
+  }'
+```
+3. Verificar la recepción del correo.

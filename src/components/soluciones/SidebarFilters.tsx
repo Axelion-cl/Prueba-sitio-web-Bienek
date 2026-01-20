@@ -15,6 +15,10 @@ interface SidebarFiltersProps {
     availableFamilies: string[];
     selectedFamilies: Set<string>;
     onToggleFamily: (familyId: string) => void;
+
+    // Clear Filters
+    onClearFilters: () => void;
+    hasActiveFilters: boolean;
 }
 
 export function SidebarFilters({
@@ -23,7 +27,9 @@ export function SidebarFilters({
     onToggleBrand,
     availableFamilies,
     selectedFamilies,
-    onToggleFamily
+    onToggleFamily,
+    onClearFilters,
+    hasActiveFilters
 }: SidebarFiltersProps) {
     const [isBrandsOpen, setIsBrandsOpen] = useState(true);
     const [isFamiliesOpen, setIsFamiliesOpen] = useState(true);
@@ -35,8 +41,16 @@ export function SidebarFilters({
 
     return (
         <aside className="w-full lg:w-40 flex-shrink-0 space-y-6">
-            <div className="pb-4 border-b border-gray-100">
+            <div className="pb-4 border-b border-gray-100 flex justify-between items-center">
                 <h3 className="font-outfit font-semibold text-xl text-gray-900">Filtros</h3>
+                {hasActiveFilters && (
+                    <button
+                        onClick={onClearFilters}
+                        className="text-xs text-red-500 hover:text-red-700 font-medium transition-colors"
+                    >
+                        Limpiar
+                    </button>
+                )}
             </div>
 
             {/* Families Filter */}

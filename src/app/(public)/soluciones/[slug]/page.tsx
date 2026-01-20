@@ -15,6 +15,8 @@ interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
+export const dynamicParams = false; // Required for static export
+
 export default async function SolucionesPage({ params }: PageProps) {
     const { slug } = await params;
     const solution = solutions.find((s) => s.slug === slug);

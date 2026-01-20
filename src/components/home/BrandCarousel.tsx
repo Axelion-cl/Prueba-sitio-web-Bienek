@@ -45,7 +45,7 @@ export function BrandCarousel() {
                     {[...brands, ...brands].map((brand, index) => (
                         <div
                             key={index}
-                            className="relative h-24 w-48 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300 transform hover:scale-110 cursor-pointer flex items-center justify-center shrink-0"
+                            className="relative h-24 w-48 opacity-100 hover:scale-110 cursor-pointer flex items-center justify-center shrink-0 transition-transform duration-300"
                             style={{ height: '96px', width: '192px' }}
                         >
                             <Image

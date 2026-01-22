@@ -1,11 +1,10 @@
-'use server';
+/**
+ * Admin Products Service
+ * Client-side Supabase operations for product CRUD
+ * Replaces: src/app/actions/products.ts
+ */
 
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { revalidatePath } from 'next/cache';
-
-// ============================================
-// PRODUCTS CRUD
-// ============================================
+import { supabase } from '@/lib/supabase';
 
 export interface ProductInput {
     id?: string;
@@ -13,7 +12,6 @@ export interface ProductInput {
     brand: string;
     brand_logo?: string;
     description?: string;
-
     sku?: string;
     images?: string[];
     specs?: Record<string, string>;
@@ -24,11 +22,9 @@ export interface ProductInput {
 
 export async function createProduct(data: ProductInput) {
     const { sectorIds, familyIds, ...productData } = data;
-
-    // Generate ID if not provided
     const productId = data.id || `PROD-${Date.now()}`;
 
-    const { data: product, error } = await supabaseAdmin
+    const { data: product, error } = await supabase
         .from('products')
         .insert({ ...productData, id: productId })
         .select()
@@ -41,27 +37,25 @@ export async function createProduct(data: ProductInput) {
 
     // Insert sector relations
     if (sectorIds && sectorIds.length > 0) {
-        await supabaseAdmin.from('product_sectors').insert(
+        await supabase.from('product_sectors').insert(
             sectorIds.map(sid => ({ product_id: productId, sector_id: sid }))
         );
     }
 
     // Insert family relations
     if (familyIds && familyIds.length > 0) {
-        await supabaseAdmin.from('product_families').insert(
+        await supabase.from('product_families').insert(
             familyIds.map(fid => ({ product_id: productId, family_id: fid }))
         );
     }
 
-    revalidatePath('/admin/products');
-    revalidatePath('/promociones');
     return { success: true, data: product };
 }
 
 export async function updateProduct(id: string, data: ProductInput) {
     const { sectorIds, familyIds, ...productData } = data;
 
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('products')
         .update(productData)
         .eq('id', id);
@@ -71,11 +65,11 @@ export async function updateProduct(id: string, data: ProductInput) {
         return { success: false, error: error.message };
     }
 
-    // Update sector relations (delete old, insert new)
+    // Update sector relations
     if (sectorIds) {
-        await supabaseAdmin.from('product_sectors').delete().eq('product_id', id);
+        await supabase.from('product_sectors').delete().eq('product_id', id);
         if (sectorIds.length > 0) {
-            await supabaseAdmin.from('product_sectors').insert(
+            await supabase.from('product_sectors').insert(
                 sectorIds.map(sid => ({ product_id: id, sector_id: sid }))
             );
         }
@@ -83,26 +77,23 @@ export async function updateProduct(id: string, data: ProductInput) {
 
     // Update family relations
     if (familyIds) {
-        await supabaseAdmin.from('product_families').delete().eq('product_id', id);
+        await supabase.from('product_families').delete().eq('product_id', id);
         if (familyIds.length > 0) {
-            await supabaseAdmin.from('product_families').insert(
+            await supabase.from('product_families').insert(
                 familyIds.map(fid => ({ product_id: id, family_id: fid }))
             );
         }
     }
 
-    revalidatePath('/admin/products');
-    revalidatePath(`/productos/${id}`);
-    revalidatePath('/promociones');
     return { success: true };
 }
 
 export async function deleteProduct(id: string) {
-    // Relations will be deleted by CASCADE (if configured) or manually
-    await supabaseAdmin.from('product_sectors').delete().eq('product_id', id);
-    await supabaseAdmin.from('product_families').delete().eq('product_id', id);
+    // Delete relations first
+    await supabase.from('product_sectors').delete().eq('product_id', id);
+    await supabase.from('product_families').delete().eq('product_id', id);
 
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('products')
         .delete()
         .eq('id', id);
@@ -112,27 +103,17 @@ export async function deleteProduct(id: string) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/products');
-    revalidatePath('/promociones');
     return { success: true };
 }
 
-export async function uploadProductImage(formData: FormData) {
-    const file = formData.get('file') as File;
-    if (!file) return { success: false, error: 'No file provided' };
-
+export async function uploadProductImage(file: File): Promise<{ success: boolean; url?: string; error?: string }> {
     try {
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `${fileName}`;
 
-        // Convert file to ArrayBuffer for supabase-js upload in Node environment
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-
-        const { error: uploadError } = await supabaseAdmin.storage
+        const { error: uploadError } = await supabase.storage
             .from('products')
-            .upload(filePath, buffer, {
+            .upload(fileName, file, {
                 contentType: file.type,
                 upsert: false
             });
@@ -142,13 +123,13 @@ export async function uploadProductImage(formData: FormData) {
             return { success: false, error: uploadError.message };
         }
 
-        const { data: { publicUrl } } = supabaseAdmin.storage
+        const { data: { publicUrl } } = supabase.storage
             .from('products')
-            .getPublicUrl(filePath);
+            .getPublicUrl(fileName);
 
         return { success: true, url: publicUrl };
     } catch (error: any) {
-        console.error('Server Upload Error:', error);
+        console.error('Upload Error:', error);
         return { success: false, error: error.message };
     }
 }

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import {
     createLead, deleteLead, convertLeadToClient, deleteClient, getLeads, getClients
-} from '@/app/actions/clients';
+} from '@/services/admin/clients';
 
 interface Lead {
     id: string;

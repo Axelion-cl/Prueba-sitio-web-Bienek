@@ -10,7 +10,7 @@ import {
     createFamily, updateFamily, deleteFamily,
     createBrand, updateBrand, deleteBrand,
     createBadge, updateBadge, deleteBadge
-} from '@/app/actions/tags';
+} from '@/services/admin/tags';
 
 type Tab = 'sectors' | 'families' | 'brands' | 'badges';
 

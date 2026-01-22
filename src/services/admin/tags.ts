@@ -1,7 +1,10 @@
-'use server';
+/**
+ * Admin Tags Service
+ * Client-side Supabase operations for sectors, families, brands, badges CRUD
+ * Replaces: src/app/actions/tags.ts
+ */
 
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { revalidatePath } from 'next/cache';
+import { supabase } from '@/lib/supabase';
 
 // ============================================
 // SECTORS CRUD
@@ -21,7 +24,7 @@ export interface SectorInput {
 export async function createSector(data: SectorInput) {
     const sectorId = data.id || data.slug;
 
-    const { data: sector, error } = await supabaseAdmin
+    const { data: sector, error } = await supabase
         .from('sectors')
         .insert({ ...data, id: sectorId })
         .select()
@@ -32,13 +35,11 @@ export async function createSector(data: SectorInput) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
-    revalidatePath('/');
     return { success: true, data: sector };
 }
 
 export async function updateSector(id: string, data: Partial<SectorInput>) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('sectors')
         .update(data)
         .eq('id', id);
@@ -48,14 +49,11 @@ export async function updateSector(id: string, data: Partial<SectorInput>) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
-    revalidatePath('/');
-    revalidatePath(`/soluciones/${data.slug || id}`);
     return { success: true };
 }
 
 export async function deleteSector(id: string) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('sectors')
         .delete()
         .eq('id', id);
@@ -65,8 +63,6 @@ export async function deleteSector(id: string) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
-    revalidatePath('/');
     return { success: true };
 }
 
@@ -82,7 +78,7 @@ export interface FamilyInput {
 export async function createFamily(data: FamilyInput) {
     const familyId = data.id || data.name.toLowerCase().replace(/\s+/g, '-');
 
-    const { data: family, error } = await supabaseAdmin
+    const { data: family, error } = await supabase
         .from('families')
         .insert({ ...data, id: familyId })
         .select()
@@ -93,12 +89,11 @@ export async function createFamily(data: FamilyInput) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true, data: family };
 }
 
 export async function updateFamily(id: string, data: Partial<FamilyInput>) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('families')
         .update(data)
         .eq('id', id);
@@ -108,12 +103,11 @@ export async function updateFamily(id: string, data: Partial<FamilyInput>) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true };
 }
 
 export async function deleteFamily(id: string) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('families')
         .delete()
         .eq('id', id);
@@ -123,7 +117,6 @@ export async function deleteFamily(id: string) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true };
 }
 
@@ -140,7 +133,7 @@ export interface BrandInput {
 export async function createBrand(data: BrandInput) {
     const brandId = data.id || data.name.toLowerCase().replace(/\s+/g, '-');
 
-    const { data: brand, error } = await supabaseAdmin
+    const { data: brand, error } = await supabase
         .from('brands')
         .insert({ ...data, id: brandId })
         .select()
@@ -151,12 +144,11 @@ export async function createBrand(data: BrandInput) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true, data: brand };
 }
 
 export async function updateBrand(id: string, data: Partial<BrandInput>) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('brands')
         .update(data)
         .eq('id', id);
@@ -166,12 +158,11 @@ export async function updateBrand(id: string, data: Partial<BrandInput>) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true };
 }
 
 export async function deleteBrand(id: string) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('brands')
         .delete()
         .eq('id', id);
@@ -181,7 +172,6 @@ export async function deleteBrand(id: string) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true };
 }
 
@@ -198,7 +188,7 @@ export interface BadgeInput {
 export async function createBadge(data: BadgeInput) {
     const badgeId = data.id || data.name.toLowerCase().replace(/\s+/g, '-');
 
-    const { data: badge, error } = await supabaseAdmin
+    const { data: badge, error } = await supabase
         .from('badges')
         .insert({ ...data, id: badgeId, last_edited: new Date().toISOString() })
         .select()
@@ -209,12 +199,11 @@ export async function createBadge(data: BadgeInput) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true, data: badge };
 }
 
 export async function updateBadge(id: string, data: Partial<BadgeInput>) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('badges')
         .update({ ...data, last_edited: new Date().toISOString() })
         .eq('id', id);
@@ -224,12 +213,11 @@ export async function updateBadge(id: string, data: Partial<BadgeInput>) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true };
 }
 
 export async function deleteBadge(id: string) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('badges')
         .delete()
         .eq('id', id);
@@ -239,6 +227,5 @@ export async function deleteBadge(id: string) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/tags');
     return { success: true };
 }

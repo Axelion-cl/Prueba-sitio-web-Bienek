@@ -3,16 +3,33 @@
 import { useState } from "react";
 import { Send, CheckCircle2 } from "lucide-react";
 import { FileUpload } from "@/components/contacto/FileUpload";
+import { supabase } from "@/lib/supabase";
 
-interface FormData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    area: string;
-    message: string;
-    cv: File | null;
-}
+// Helper to send email via PHP Bridge
+const sendEmail = async (formData: FormData) => {
+    const PHP_BRIDGE_URL = process.env.NEXT_PUBLIC_PHP_BRIDGE_URL;
+    if (!PHP_BRIDGE_URL) {
+        console.warn("PHP_BRIDGE_URL variable not set");
+        return false;
+    }
+
+    try {
+        const response = await fetch(PHP_BRIDGE_URL, {
+            method: "POST",
+            body: formData, // Browser automatically sets Content-Type: multipart/form-data
+        });
+        return response.ok;
+    } catch (error) {
+        console.error("Error sending email:", error);
+        return false;
+    }
+};
+
+// ... (keep interface)
+
+import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
+
+// ... existing imports
 
 const AREAS = [
     "Ventas",
@@ -24,8 +41,18 @@ const AREAS = [
     "Otro"
 ];
 
+interface JobApplicationData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    area: string;
+    message: string;
+    cv: File | null;
+}
+
 export function JobApplicationForm() {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<JobApplicationData>({
         firstName: "",
         lastName: "",
         email: "",
@@ -35,12 +62,14 @@ export function JobApplicationForm() {
         cv: null
     });
 
-    const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+    const [errors, setErrors] = useState<Partial<Record<keyof JobApplicationData, string>>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
     const validate = () => {
-        const newErrors: Partial<Record<keyof FormData, string>> = {};
+        const newErrors: Partial<Record<keyof JobApplicationData, string>> = {};
         if (!formData.firstName.trim()) newErrors.firstName = "El nombre es requerido";
         if (!formData.lastName.trim()) newErrors.lastName = "El apellido es requerido";
         if (!formData.email.trim()) newErrors.email = "El email es requerido";
@@ -53,27 +82,72 @@ export function JobApplicationForm() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!validate()) return;
-
-        setIsSubmitting(true);
-
-        // Simulation
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        setIsSubmitting(false);
-        setIsSuccess(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
         // Clear error when user types
-        if (errors[name as keyof FormData]) {
+        if (errors[name as keyof JobApplicationData]) {
             setErrors(prev => ({ ...prev, [name]: undefined }));
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSubmitError(null);
+
+        if (!validate()) return;
+
+        if (!turnstileToken) {
+            setSubmitError("Por favor verifica que no eres un robot.");
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            // 1. Save to Supabase
+            const { error: dbError } = await supabase.from('applications').insert({
+                first_name: formData.firstName,
+                last_name: formData.lastName,
+                email: formData.email,
+                phone: formData.phone,
+                area: formData.area,
+                message: formData.message,
+                status: 'new'
+            });
+
+            if (dbError) {
+                console.error("Error saving to Supabase:", dbError);
+            }
+
+            // 2. Send Email via PHP Bridge
+            const bridgeData = new FormData();
+            bridgeData.append("name", `${formData.firstName} ${formData.lastName}`);
+            bridgeData.append("email", formData.email);
+            bridgeData.append("d3", formData.area); // Map 'area' to generic 'd3' field
+            bridgeData.append("phone", formData.phone);
+            bridgeData.append("message", formData.message);
+            bridgeData.append("type", "application");
+            bridgeData.append("cf-turnstile-response", turnstileToken);
+
+            if (formData.cv) {
+                bridgeData.append("attachment", formData.cv);
+            }
+
+            const emailSuccess = await sendEmail(bridgeData);
+
+            if (emailSuccess || !dbError) {
+                setIsSuccess(true);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTurnstileToken(null);
+            } else {
+                setSubmitError("Hubo un error al enviar tu postulación. Intenta nuevamente.");
+            }
+        } catch (error) {
+            setSubmitError("Error de conexión. Intenta nuevamente.");
+            console.error(error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -108,6 +182,12 @@ export function JobApplicationForm() {
                 <h2 className="font-outfit font-semibold text-2xl text-gray-900 mb-2">Postulación Directa</h2>
                 <p className="text-gray-600">Completa el formulario y adjunta tu CV para ser parte de nuestro equipo.</p>
             </div>
+
+            {submitError && (
+                <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-200">
+                    {submitError}
+                </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 {/* Nombre */}
@@ -223,6 +303,12 @@ export function JobApplicationForm() {
                     }}
                     error={errors.cv}
                 />
+            </div>
+
+
+            {/* Turnstile */}
+            <div className="mb-6">
+                <TurnstileWidget onVerify={setTurnstileToken} />
             </div>
 
             {/* Submit Button */}

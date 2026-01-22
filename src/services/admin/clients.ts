@@ -1,7 +1,10 @@
-'use server';
+/**
+ * Admin Clients Service
+ * Client-side Supabase operations for leads and clients CRUD
+ * Replaces: src/app/actions/clients.ts
+ */
 
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { revalidatePath } from 'next/cache';
+import { supabase } from '@/lib/supabase';
 
 // ============================================
 // LEADS CRUD
@@ -15,8 +18,22 @@ export interface LeadInput {
     phone?: string;
 }
 
+export async function getLeads() {
+    const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching leads:', error);
+        return [];
+    }
+
+    return data;
+}
+
 export async function createLead(data: LeadInput) {
-    const { data: lead, error } = await supabaseAdmin
+    const { data: lead, error } = await supabase
         .from('leads')
         .insert({
             ...data,
@@ -31,12 +48,11 @@ export async function createLead(data: LeadInput) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/clients');
     return { success: true, data: lead };
 }
 
 export async function deleteLead(id: string) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('leads')
         .delete()
         .eq('id', id);
@@ -46,7 +62,6 @@ export async function deleteLead(id: string) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/clients');
     return { success: true };
 }
 
@@ -61,9 +76,23 @@ export interface ClientInput {
     phone?: string;
 }
 
+export async function getClients() {
+    const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .order('registration_date', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching clients:', error);
+        return [];
+    }
+
+    return data;
+}
+
 export async function convertLeadToClient(leadId: string) {
     // 1. Get lead data
-    const { data: lead, error: leadError } = await supabaseAdmin
+    const { data: lead, error: leadError } = await supabase
         .from('leads')
         .select('*')
         .eq('id', leadId)
@@ -75,7 +104,7 @@ export async function convertLeadToClient(leadId: string) {
     }
 
     // 2. Create client record
-    const { data: client, error: clientError } = await supabaseAdmin
+    const { data: client, error: clientError } = await supabase
         .from('clients')
         .insert({
             name: lead.name,
@@ -94,12 +123,11 @@ export async function convertLeadToClient(leadId: string) {
     }
 
     // 3. Delete lead
-    await supabaseAdmin.from('leads').delete().eq('id', leadId);
+    await supabase.from('leads').delete().eq('id', leadId);
 
-    // 4. Generate temporary password (for display purposes)
+    // 4. Generate temporary password
     const tempPassword = generateTempPassword();
 
-    revalidatePath('/admin/clients');
     return {
         success: true,
         data: client,
@@ -108,7 +136,7 @@ export async function convertLeadToClient(leadId: string) {
 }
 
 export async function deleteClient(id: string) {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('clients')
         .delete()
         .eq('id', id);
@@ -118,12 +146,11 @@ export async function deleteClient(id: string) {
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/clients');
     return { success: true };
 }
 
 export async function updateClientStatus(id: string, status: 'active' | 'inactive') {
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
         .from('clients')
         .update({ status })
         .eq('id', id);
@@ -133,7 +160,6 @@ export async function updateClientStatus(id: string, status: 'active' | 'inactiv
         return { success: false, error: error.message };
     }
 
-    revalidatePath('/admin/clients');
     return { success: true };
 }
 
@@ -141,36 +167,4 @@ export async function updateClientStatus(id: string, status: 'active' | 'inactiv
 function generateTempPassword(): string {
     const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
     return Array.from({ length: 10 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-}
-
-// ============================================
-// FETCH FUNCTIONS (Read from DB)
-// ============================================
-
-export async function getLeads() {
-    const { data, error } = await supabaseAdmin
-        .from('leads')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        console.error('Error fetching leads:', error);
-        return [];
-    }
-
-    return data;
-}
-
-export async function getClients() {
-    const { data, error } = await supabaseAdmin
-        .from('clients')
-        .select('*')
-        .order('registration_date', { ascending: false });
-
-    if (error) {
-        console.error('Error fetching clients:', error);
-        return [];
-    }
-
-    return data;
 }

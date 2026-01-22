@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { Product } from '@/data/mockProducts';
 import { Plus, Search, Edit, Trash2, ChevronLeft, ChevronRight, Upload, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { deleteProduct } from '@/app/actions/products';
+import { deleteProduct } from '@/services/admin/products';
 
 export default function AdminProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);

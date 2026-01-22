@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Save, X, Upload, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import { createProduct, updateProduct, uploadProductImage } from '@/app/actions/products';
+import { createProduct, updateProduct, uploadProductImage } from '@/services/admin/products';
 import { MultiSelect } from '@/components/ui/MultiSelect';
 
 interface ProductFormProps {
@@ -143,10 +143,7 @@ export function ProductForm({ initialData, isEditing = false }: ProductFormProps
         setUploading(true);
 
         try {
-            const formDataUpload = new FormData();
-            formDataUpload.append('file', file);
-
-            const result = await uploadProductImage(formDataUpload);
+            const result = await uploadProductImage(file);
 
             if (!result.success) {
                 throw new Error(result.error);

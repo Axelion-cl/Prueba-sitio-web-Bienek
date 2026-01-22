@@ -127,6 +127,48 @@ export async function getRelatedProducts(ids: string[]): Promise<Product[]> {
     return data.map(mapSupabaseToProduct);
 }
 
+/**
+ * Search products by name (for SearchBar)
+ * Returns lightweight product data for quick display
+ */
+export async function searchProducts(query: string, limit: number = 10): Promise<{
+    id: string;
+    name: string;
+    brand: string;
+    brandLogo: string;
+    image: string;
+    sectorId: string | null;
+}[]> {
+    if (!query || query.trim().length < 2) return [];
+
+    const { data, error } = await supabase
+        .from('products')
+        .select(`
+            id,
+            name,
+            brand,
+            brand_logo,
+            images,
+            product_sectors ( sector_id )
+        `)
+        .ilike('name', `%${query}%`)
+        .limit(limit);
+
+    if (error) {
+        console.error('Error searching products:', error);
+        return [];
+    }
+
+    return data.map(row => ({
+        id: row.id,
+        name: row.name,
+        brand: row.brand || '',
+        brandLogo: row.brand_logo || '',
+        image: row.images?.[0] || '/assets/images/solutions/limpieza-general.png',
+        sectorId: row.product_sectors?.[0]?.sector_id || null
+    }));
+}
+
 
 // --- Helper: Map DB Row to Frontend Type ---
 function mapSupabaseToProduct(row: any): Product {

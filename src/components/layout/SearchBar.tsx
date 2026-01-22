@@ -1,25 +1,70 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Search } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Search, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { searchProducts } from "@/services/products";
 
-// Dummy data for simulation
-const products = [
-    { id: 1, name: "Paños de Limpieza Wypall X70", brand: "Wypall", brandLogo: "/assets/images/logos/Wypall.png", image: "/assets/images/solutions/industria.png", category: "Industrial" },
-    { id: 2, name: "Limpiador Desinfectante Lysoform", brand: "Lysoform", brandLogo: "/assets/images/logos/Lysoform.png", image: "/assets/images/solutions/salud.png", category: "Salud" },
-    { id: 3, name: "Papel Higiénico Elite Professional", brand: "Elite", brandLogo: "/assets/images/logos/Elite.png", image: "/assets/images/solutions/oficinas.png", category: "Institucional" },
-    { id: 4, name: "Dispensador de Jabón Tork", brand: "Tork", brandLogo: "/assets/images/logos/Tork-Logo.png", image: "/assets/images/solutions/horeca.png", category: "HORECA" },
-    { id: 5, name: "Cera Autobrillo Virginia", brand: "Virginia", brandLogo: "/assets/images/logos/Virginia.png", image: "/assets/images/solutions/jardines.png", category: "General" },
-];
+// Type for search results
+interface SearchResult {
+    id: string;
+    name: string;
+    brand: string;
+    brandLogo: string;
+    image: string;
+    sectorId: string | null;
+}
+
+// Debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+}
 
 export function SearchBar() {
     const [query, setQuery] = useState("");
+    const [results, setResults] = useState<SearchResult[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const filtered = products.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+    // Debounce the search query (300ms delay)
+    const debouncedQuery = useDebounce(query, 300);
+
+    // Fetch products when debounced query changes
+    useEffect(() => {
+        async function fetchResults() {
+            if (debouncedQuery.trim().length < 2) {
+                setResults([]);
+                return;
+            }
+
+            setIsLoading(true);
+            try {
+                const data = await searchProducts(debouncedQuery, 8);
+                setResults(data);
+            } catch (error) {
+                console.error("Search error:", error);
+                setResults([]);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchResults();
+    }, [debouncedQuery]);
 
     // Close on click outside
     useEffect(() => {
@@ -46,19 +91,31 @@ export function SearchBar() {
                     }}
                     onFocus={() => setIsOpen(true)}
                 />
-                <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
+                {isLoading ? (
+                    <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5 animate-spin" />
+                ) : (
+                    <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
+                )}
             </div>
 
             {/* Dropdown Results */}
-            {isOpen && query.length > 0 && (
+            {isOpen && query.length >= 2 && (
                 <div className="absolute top-full left-0 w-full bg-white mt-2 rounded-xl shadow-xl overflow-hidden z-50 border border-gray-100">
-                    {filtered.length > 0 ? (
+                    {isLoading ? (
+                        <div className="p-4 text-center text-gray-500 text-sm">
+                            Buscando...
+                        </div>
+                    ) : results.length > 0 ? (
                         <ul>
-                            {filtered.map((product) => (
+                            {results.map((product) => (
                                 <li key={product.id} className="border-b border-gray-50 last:border-none">
                                     <Link
-                                        href="#"
+                                        href={`/productos/${product.id}`}
                                         className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors group"
+                                        onClick={() => {
+                                            setIsOpen(false);
+                                            setQuery("");
+                                        }}
                                     >
                                         <div className="flex items-center gap-4">
                                             {/* Product Image */}
@@ -76,19 +133,21 @@ export function SearchBar() {
                                                 <span className="font-medium text-sm text-gray-800 group-hover:text-primary transition-colors line-clamp-1">
                                                     {product.name}
                                                 </span>
-                                                <span className="text-xs text-gray-400">{product.category}</span>
+                                                <span className="text-xs text-gray-400">{product.brand}</span>
                                             </div>
                                         </div>
 
                                         {/* Brand Logo */}
-                                        <div className="relative w-8 h-8 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
-                                            <Image
-                                                src={product.brandLogo}
-                                                alt={product.brand}
-                                                fill
-                                                className="object-contain"
-                                            />
-                                        </div>
+                                        {product.brandLogo && (
+                                            <div className="relative w-8 h-8 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
+                                                <Image
+                                                    src={product.brandLogo}
+                                                    alt={product.brand}
+                                                    fill
+                                                    className="object-contain"
+                                                />
+                                            </div>
+                                        )}
                                     </Link>
                                 </li>
                             ))}

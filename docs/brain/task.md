@@ -96,5 +96,21 @@
 - [ ] Activación de Importador Masivo con persistencia real <!-- id: 98 -->
 - [ ] Conexión de "Familias Destacadas" y Sectores a la DB <!-- id: 99 -->
 - [ ] Sincronización de CRM (Leads/Clientes) con almacenamiento real <!-- id: 100 -->
-- [ ] Implementación de Puente PHP para Email (Última prioridad) <!-- id: 95 -->
+- [ ] Sincronización de CRM (Leads/Clientes) con almacenamiento real <!-- id: 100 -->
+- [x] **Desplegar Puente PHP en Hostinger** (Nueva Estrategia) <!-- id: 104 -->
+    - [x] Crear "Custom PHP/HTML website" en Hostinger <!-- id: 105 -->
+    - [x] Crear carpeta `api-bienek` en `public_html` <!-- id: 106 -->
+    - [x] Subir `php-bridge/email.php` <!-- id: 107 -->
+    - [x] Actualizar `.env.local` con `PHP_BRIDGE_URL` (`https://axelion.cl/api-bienek/email.php`) <!-- id: 108 -->
+- [x] **Implementar Formulario "Trabaja con Nosotros"** <!-- id: 109 -->
+    - [x] Actualizar Schema DB: Tabla `applications` (o similar) y RLS <!-- id: 110 -->
+    - [x] Actualizar `php-bridge/email.php` para soportar diferentes tipos de email (Contacto vs Postulación) <!-- id: 111 -->
+    - [x] Crear Server Action `submitApplication` <!-- id: 112 -->
+    - [x] Conectar Formulario de UI con Server Action <!-- id: 113 -->
+- [x] **Migración a Arquitectura Estática (Mundo Hosting/cPanel)** <!-- id: 114 -->
+    - [x] Configurar `next.config.mjs` con `output: 'export'` <!-- id: 115 -->
+    - [x] Refactorizar `ContactForm` (Eliminar Server Action -> Client Fetch) <!-- id: 116 -->
+    - [x] Refactorizar `JobApplicationForm` (Eliminar Server Action -> Client Fetch) <!-- id: 117 -->
+    - [x] Configurar `loader` de imágenes para exportación estática (`unoptimized: true`) <!-- id: 118 -->
+    - [x] Implementar Protección Spam (Cloudflare Turnstile) <!-- id: 119 -->
 - [ ] Documentación de Autonomía para el Cliente (Manual de Uso Admin) <!-- id: 102 -->

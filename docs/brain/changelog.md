@@ -4,6 +4,95 @@ Este documento registra los cambios implementados durante las sesiones de desarr
 
 ---
 
+## Sesión: 2026-01-23 - Debugging Formulario de Contacto (Hostinger)
+
+### Corrección de Envío de Correos
+- **Problema**: Error "Failed to fetch" (CORS) y 403 Forbidden en `email.php`.
+- **Diagnóstico**:
+    - El formulario no enviaba destinatario (seguridad), `email.php` lo requería.
+    - Archivo `.htaccess` en Hostinger tenía `Deny from all`.
+- **Solución**:
+    - **`php-bridge/email.php`**: Reescrito para usar destinatario hardcodeado (`marketing@bienek.cl`) y cabeceras CORS permisivas.
+    - **`php-bridge/.htaccess`**: Reemplazado para permitir acceso a `.php` (`Allow from all`) pero ocultar índices (`Options -Indexes`).
+    - **Documentación**: Actualizado `ORCHESTRATOR_AGENT_CONTEXT.md` reflejando hosting en **Hostinger**.
+
+---
+
+## Sesión: 2026-01-22 - Migración Completa a Arquitectura Estática
+
+### Refactor de Server Actions → Client Services
+- **Problema**: `npm run build` fallaba con error "Server Actions are not supported with static export".
+- **Solución**: Migración completa del Panel de Admin a servicios client-side.
+- **Archivos Eliminados**:
+    - `src/app/actions/products.ts`
+    - `src/app/actions/tags.ts`
+    - `src/app/actions/clients.ts`
+    - `src/app/actions/contact.ts`
+    - `src/app/actions/careers.ts`
+- **Archivos Creados**:
+    - `src/services/admin/products.ts` - CRUD productos + upload imágenes
+    - `src/services/admin/tags.ts` - CRUD sectores/familias/marcas/badges
+    - `src/services/admin/clients.ts` - CRUD leads/clientes
+- **Componentes Actualizados**:
+    - `ProductForm.tsx`, `products/page.tsx`, `tags/page.tsx`, `clients/page.tsx`
+- **Resultado**: Build exitoso con 166 páginas estáticas generadas.
+
+### Protección Anti-Spam (Cloudflare Turnstile)
+- **Widget**: Creado `src/components/ui/TurnstileWidget.tsx` usando `@marsidev/react-turnstile`.
+- **Formularios Protegidos**:
+    - `ContactForm.tsx` - Añadido estado `turnstileToken` y validación pre-submit.
+    - `JobApplicationForm.tsx` - Ídem.
+- **Backend PHP**: Actualizado `php-bridge/email.php` con función `verifyTurnstile()`.
+- **Configuración**: Keys agregadas a `.env.local` (`NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`).
+
+### Favicon
+- **Nuevo**: Copiado logo de Bienek como `src/app/icon.png` para favicon moderno.
+
+---
+
+## Sesión: 2026-01-19/20 - Estrategia Mundo Hosting + PHP Bridge
+
+### Auditoría de Infraestructura
+- **Análisis**: Documentados límites de Vercel Free (100GB bandwidth, 1000 imágenes, 10s compute).
+- **Decisión**: Migrar frontend a **Mundo Hosting (cPanel)** como sitio estático.
+- **Arquitectura Híbrida**:
+    - **Frontend**: Next.js Static Export (`output: 'export'`) en cPanel.
+    - **Backend**: Supabase Cloud (DB + Auth + Storage).
+    - **Email**: PHP Bridge en mismo cPanel (SMTP nativo).
+
+### PHP Bridge para Emails
+- **Archivo**: `php-bridge/email.php` creado con soporte para:
+    - Formulario de Contacto (`type: 'contact'`).
+    - Formulario de Postulación (`type: 'application'`).
+    - Adjuntos (Excel, CSV, PDF) via MIME multipart.
+- **Email Template**: HTML profesional con gradientes, tipografía y diseño responsive.
+- **Despliegue**: Subido a `axelion.cl/api-bienek/email.php`.
+- **Config**: Variable `NEXT_PUBLIC_PHP_BRIDGE_URL` en `.env.local`.
+
+### Configuración Static Export
+- **next.config.mjs**: Añadido `output: 'export'` e `images: { unoptimized: true }`.
+- **Refactor Forms**:
+    - `ContactForm.tsx`: Eliminada dependencia de Server Action, usa `fetch()` directo al PHP Bridge.
+    - `JobApplicationForm.tsx`: Ídem.
+
+---
+
+## Sesión: 2026-01-17/18 - Dashboard Real Data + Promociones DB
+
+### Dashboard con Datos Reales (`/admin/dashboard`)
+- **Migración**: Reemplazado `mockCRM` con queries directos a Supabase.
+- **Métricas Reales**: Conteo de Leads, Clientes, Órdenes, Productos desde DB.
+
+### Promociones desde Supabase
+- **Query**: Productos con badge "promoción" o "oferta" se muestran automáticamente en `/promociones`.
+- **Verificación**: CRUD de badges sincronizado correctamente con página pública.
+
+### Barra de Búsqueda Conectada a DB
+- **Servicio**: `src/services/products.ts` → función `searchProducts()` con `.ilike()`.
+- **Componente**: `SearchBar.tsx` usa debounce + Supabase en tiempo real.
+
+---
+
 ## Sesión: 2026-01-16 (Mañana) - UI/UX Admin Dashboard Improvements
 
 ### Gestión de Etiquetas (`/admin/tags`)

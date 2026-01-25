@@ -11,7 +11,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Bienek - Soluciones Industriales",
+  title: "Bienek - Soluciones Integrales de Limpieza",
   description: "Sitio web oficial de Bienek",
 };
 

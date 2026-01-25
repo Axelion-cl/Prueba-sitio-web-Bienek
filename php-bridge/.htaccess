@@ -1,0 +1,10 @@
+# Evitar que se listen los archivos del directorio (seguridad básica)
+Options -Indexes
+
+# Permitir acceso público a todos los archivos PHP (necesario para la API)
+# Si tenías "Deny from all", bórralo o coméntalo.
+
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>

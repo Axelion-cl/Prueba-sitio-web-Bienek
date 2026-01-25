@@ -8,11 +8,19 @@
  * Uso: Subir a cPanel y configurar PHP_BRIDGE_URL en .env.local
  */
 
-// CORS headers para permitir solicitudes desde el sitio web
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Content-Type: application/json');
+// Configuración de Errores (para debug, desactivar en producción si se desea)
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // No mostrar errores en el output para no romper JSON
+
+// Configuración del Correo de Destino
+// ¡IMPORTANTE! Cambiar este correo por el real de la empresa
+$DESTINATION_EMAIL = 'marketing@bienek.cl';
+
+// CORS headers para permitir solicitudes desde el sitio web (localhost y dominio real)
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, X-Requested-With");
+header('Content-Type: application/json; charset=utf-8');
 
 // Handle preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -68,24 +76,27 @@ if (!$token || !verifyTurnstile($token, $TURNSTILE_SECRET_KEY)) {
 
 // Get form data
 $type = isset($_POST['type']) ? $_POST['type'] : 'contact'; // 'contact' or 'application'
-$to = isset($_POST['to']) ? filter_var($_POST['to'], FILTER_VALIDATE_EMAIL) : null;
+
+// Sanitización básica
 $name = isset($_POST['name']) ? htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8') : '';
 $email = isset($_POST['email']) ? filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) : '';
-// Field mapping based on type
-$field3_label = ($type === 'application') ? 'Área de Interés' : 'Empresa';
-$field3_value = isset($_POST['d3']) ? htmlspecialchars($_POST['d3'], ENT_QUOTES, 'UTF-8') : ''; // d3 is generic for company/area
-// Legacy support for 'company' param if d3 is not set
+$phone = isset($_POST['phone']) ? htmlspecialchars($_POST['phone'], ENT_QUOTES, 'UTF-8') : '';
+$message = isset($_POST['message']) ? htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8') : '';
+
+// Campo dinámico (Empresa o Área)
+$field3_value = isset($_POST['d3']) ? htmlspecialchars($_POST['d3'], ENT_QUOTES, 'UTF-8') : ''; // d3 is generic
+// Fallback para 'company' antiguo
 if (empty($field3_value) && isset($_POST['company'])) {
     $field3_value = htmlspecialchars($_POST['company'], ENT_QUOTES, 'UTF-8');
 }
 
-$phone = isset($_POST['phone']) ? htmlspecialchars($_POST['phone'], ENT_QUOTES, 'UTF-8') : '';
-$message = isset($_POST['message']) ? htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8') : '';
+// Etiquetas
+$field3_label = ($type === 'application') ? 'Área de Interés' : 'Empresa';
 
 // Validate required fields
-if (!$to || !$name || !$email) {
+if (!$name || !$email) {
     http_response_code(400);
-    echo json_encode(['error' => 'Missing required fields']);
+    echo json_encode(['error' => 'Faltan campos requeridos (Nombre o Email)']);
     exit();
 }
 
@@ -204,14 +215,14 @@ if ($hasAttachment) {
     $body = $htmlBody;
 }
 
-// Send email
-$success = mail($to, $subject, $body, $headers);
+// Send email to HARDCODED destination
+$success = mail($DESTINATION_EMAIL, $subject, $body, $headers);
 
 if ($success) {
     http_response_code(200);
     echo json_encode(['success' => true, 'message' => 'Email sent successfully']);
 } else {
     http_response_code(500);
-    echo json_encode(['error' => 'Failed to send email']);
+    echo json_encode(['error' => 'Failed to send email. Server mail() returned false.']);
 }
 ?>

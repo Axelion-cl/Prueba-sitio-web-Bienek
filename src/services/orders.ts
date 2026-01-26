@@ -238,3 +238,38 @@ export async function getOrderById(orderId: string): Promise<OrderWithItems | nu
 
     return data as OrderWithItems;
 }
+
+// ============================================
+// ADMIN: DELETE ORDER
+// ============================================
+
+export async function deleteOrder(orderId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+        // Delete order items first (if no CASCADE)
+        const { error: itemsError } = await supabase
+            .from('order_items')
+            .delete()
+            .eq('order_id', orderId);
+
+        if (itemsError) {
+            console.error('Delete order items error:', itemsError);
+            // Continue trying to delete order anyway, maybe it was empty
+        }
+
+        // Delete order
+        const { error } = await supabase
+            .from('orders')
+            .delete()
+            .eq('id', orderId);
+
+        if (error) {
+            console.error('Delete order error:', error);
+            return { success: false, error: error.message };
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error('Delete order exception:', error);
+        return { success: false, error: 'Error al eliminar la orden' };
+    }
+}

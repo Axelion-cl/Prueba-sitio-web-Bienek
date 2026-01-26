@@ -30,12 +30,15 @@ export async function signIn(email: string, password: string): Promise<{
         });
 
         if (authError) {
+            console.error('[Auth] Sign in error:', authError);
             return { success: false, error: authError.message };
         }
 
         if (!authData.user) {
             return { success: false, error: 'No se pudo obtener información del usuario' };
         }
+
+        console.log('[Auth] User authenticated, ID:', authData.user.id);
 
         // Get user profile
         const { data: profile, error: profileError } = await supabase
@@ -44,7 +47,10 @@ export async function signIn(email: string, password: string): Promise<{
             .eq('id', authData.user.id)
             .single();
 
+        console.log('[Auth] Profile fetch result:', { profile, profileError });
+
         if (profileError || !profile) {
+            console.warn('[Auth] No profile found, creating default client profile');
             // If no profile exists, create a basic one
             const newProfile = {
                 id: authData.user.id,
@@ -68,6 +74,8 @@ export async function signIn(email: string, password: string): Promise<{
                 }
             };
         }
+
+        console.log('[Auth] Profile loaded, role:', profile.role);
 
         return {
             success: true,
@@ -129,20 +137,33 @@ export async function getCurrentUser(): Promise<{
 // PASSWORD MANAGEMENT
 // ============================================
 
-export async function changePassword(newPassword: string): Promise<{
-    success: boolean;
-    error?: string;
-}> {
+export async function changePasswordWithVerification(
+    email: string,
+    currentPassword: string,
+    newPassword: string
+): Promise<{ success: boolean; error?: string }> {
     try {
-        const { error } = await supabase.auth.updateUser({
+        // 1. Verify current password by signing in (re-authentication)
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password: currentPassword
+        });
+
+        if (signInError) {
+            console.warn('Current password verification failed:', signInError);
+            return { success: false, error: 'La contraseña actual es incorrecta' };
+        }
+
+        // 2. Update password
+        const { error: updateError } = await supabase.auth.updateUser({
             password: newPassword
         });
 
-        if (error) {
-            return { success: false, error: error.message };
+        if (updateError) {
+            return { success: false, error: updateError.message };
         }
 
-        // Clear the must_change_password flag
+        // 3. Clear must_change_password flag
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             await supabase

@@ -6,7 +6,7 @@ import { Pencil, Lock, Check, X } from 'lucide-react';
 
 import { useLanguage } from '@/context/LanguageContext';
 
-import { updateProfile, changePassword } from '@/services/auth';
+import { updateProfile, changePasswordWithVerification } from '@/services/auth';
 import { useRouter } from 'next/navigation';
 
 export function MiPerfil() {
@@ -49,31 +49,52 @@ export function MiPerfil() {
         }
     };
 
+    const [passwords, setPasswords] = useState({
+        current: '',
+        new: '',
+        confirm: ''
+    });
+
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
-        const form = e.target as HTMLFormElement;
-        const currentPass = (form.elements[0] as HTMLInputElement).value;
-        const newPass = (form.elements[1] as HTMLInputElement).value;
-        const confirmPass = (form.elements[2] as HTMLInputElement).value;
 
-        if (newPass !== confirmPass) {
-            alert('las nuevas contraseñas no coinciden');
+        if (passwords.new !== passwords.confirm) {
+            alert('Las nuevas contraseñas no coinciden');
+            return;
+        }
+
+        if (passwords.new.length < 6) {
+            alert('La nueva contraseña debe tener al menos 6 caracteres');
             return;
         }
 
         setLoading(true);
-        // Note: Supabase implementation of changePassword typically doesn't strictly require current password if using the 'update' method for logged in user, 
-        // but our UI asks for it. Our service `changePassword` just takes the new password.
-        // If we wanted to verify current password we would need to SignIn first.
 
-        const { success, error } = await changePassword(newPass);
+        // Required: Current password for verification
+        if (!passwords.current) {
+            alert('Debes ingresar tu contraseña actual');
+            setLoading(false);
+            return;
+        }
+
+        if (!user?.email) {
+            alert('Error: No se pudo identificar el usuario');
+            setLoading(false);
+            return;
+        }
+
+        const { success, error } = await changePasswordWithVerification(
+            user.email,
+            passwords.current,
+            passwords.new
+        );
 
         if (success) {
             alert('Contraseña actualizada correctamente');
             setShowPasswordForm(false);
-            form.reset();
+            setPasswords({ current: '', new: '', confirm: '' });
         } else {
-            alert('Error al cambiar contraseña: ' + error);
+            alert(error || 'Error al cambiar contraseña');
         }
         setLoading(false);
     };
@@ -175,7 +196,10 @@ export function MiPerfil() {
                             <input
                                 type="password"
                                 required
-                                className="w-full bg-gray-200 rounded-lg px-4 py-2 text-gray-700"
+                                value={passwords.current}
+                                onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                                className="w-full bg-gray-200 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                placeholder="Ingresa tu contraseña actual"
                             />
                         </div>
                         <div>
@@ -183,7 +207,11 @@ export function MiPerfil() {
                             <input
                                 type="password"
                                 required
-                                className="w-full bg-gray-200 rounded-lg px-4 py-2 text-gray-700"
+                                minLength={6}
+                                value={passwords.new}
+                                onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                                className="w-full bg-gray-200 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                placeholder="Mínimo 6 caracteres"
                             />
                         </div>
                         <div>
@@ -191,19 +219,27 @@ export function MiPerfil() {
                             <input
                                 type="password"
                                 required
-                                className="w-full bg-gray-200 rounded-lg px-4 py-2 text-gray-700"
+                                value={passwords.confirm}
+                                onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                                className="w-full bg-gray-200 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                placeholder="Confirma tu nueva contraseña"
                             />
                         </div>
                         <div className="flex gap-2">
                             <button
                                 type="submit"
-                                className="bg-primary text-black px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                                disabled={loading}
+                                className="bg-primary text-black px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
                             >
-                                {t.miCuenta.actualizarContrasena}
+                                {loading ? 'Actualizando...' : t.miCuenta.actualizarContrasena}
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setShowPasswordForm(false)}
+                                onClick={() => {
+                                    setShowPasswordForm(false);
+                                    setPasswords({ current: '', new: '', confirm: '' });
+                                }}
+                                disabled={loading}
                                 className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
                             >
                                 {t.miCuenta.cancelar}

@@ -9,6 +9,10 @@ import {
 import {
     createLead, deleteLead, convertLeadToClient, deleteClient, getLeads, getClients
 } from '@/services/admin/clients';
+import { isValidEmail, getEmailValidationError } from '@/utils/validation';
+import { ClientOrdersModal } from '@/components/admin/clients/ClientOrdersModal';
+import { useAuth } from '@/context/AuthContext';
+import { Package } from 'lucide-react';
 
 interface Lead {
     id: string;
@@ -42,8 +46,8 @@ export default function ClientsPage() {
     const [clients, setClients] = useState<Client[]>([]);
 
     // Modal States
-    const [passwordModal, setPasswordModal] = useState<{ isOpen: boolean; email: string; password: string }>({
-        isOpen: false, email: '', password: ''
+    const [passwordModal, setPasswordModal] = useState<{ isOpen: boolean; email: string; password: string; confirmationSql?: string }>({
+        isOpen: false, email: '', password: '', confirmationSql: ''
     });
     const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; clientId: string; clientName: string }>({
         isOpen: false, clientId: '', clientName: ''
@@ -53,10 +57,14 @@ export default function ClientsPage() {
     const [convertModal, setConvertModal] = useState<{ isOpen: boolean; lead: Lead | null }>({
         isOpen: false, lead: null
     });
+    const [selectedClientOrders, setSelectedClientOrders] = useState<{ id: string; name: string } | null>(null);
 
     const [adminPassword, setAdminPassword] = useState('');
     const [deleteError, setDeleteError] = useState('');
     const [copied, setCopied] = useState(false);
+
+    // Get current user for audit logs
+    const { user: currentUser } = useAuth();
 
     useEffect(() => {
         fetchData();
@@ -79,6 +87,13 @@ export default function ClientsPage() {
     const handleAddLead = async () => {
         if (!newLeadForm.name || !newLeadForm.email) {
             alert('Por favor completa al menos el nombre y email.');
+            return;
+        }
+
+        // Validate email format
+        if (!isValidEmail(newLeadForm.email)) {
+            const error = getEmailValidationError(newLeadForm.email);
+            alert(error || 'Por favor ingresa un correo electrónico válido.');
             return;
         }
 
@@ -108,7 +123,12 @@ export default function ClientsPage() {
 
         if (result.success) {
             await fetchData();
-            setPasswordModal({ isOpen: true, email: lead.email, password: result.tempPassword || '' });
+            setPasswordModal({
+                isOpen: true,
+                email: lead.email,
+                password: result.tempPassword || '',
+                confirmationSql: result.confirmationSql || ''
+            });
         } else {
             alert('Error: ' + result.error);
         }
@@ -275,9 +295,19 @@ export default function ClientsPage() {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2">
+                                                {/* Orders Button */}
+                                                <button
+                                                    onClick={() => setSelectedClientOrders({ id: client.id, name: client.name })}
+                                                    className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200"
+                                                    title="Ver Órdenes"
+                                                >
+                                                    <Package className="w-4 h-4" />
+                                                </button>
+
+                                                {/* Delete Button */}
                                                 <button
                                                     onClick={() => openDeleteModal(client)}
-                                                    className="p-1.5 hover:bg-red-50 rounded text-red-600 transition-colors"
+                                                    className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors border border-red-200"
                                                     title="Eliminar Cliente"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
@@ -380,10 +410,10 @@ export default function ClientsPage() {
             {/* Password Reset Modal */}
             {passwordModal.isOpen && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+                    <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-gray-900">Nueva Contraseña Generada</h3>
-                            <button onClick={() => setPasswordModal({ isOpen: false, email: '', password: '' })}>
+                            <h3 className="text-lg font-bold text-gray-900">Cliente Creado Exitosamente</h3>
+                            <button onClick={() => setPasswordModal({ isOpen: false, email: '', password: '', confirmationSql: '' })}>
                                 <X className="w-5 h-5 text-gray-500 hover:text-red-500" />
                             </button>
                         </div>
@@ -409,13 +439,27 @@ export default function ClientsPage() {
                             </div>
                         </div>
 
+                        {passwordModal.confirmationSql && (
+                            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                                <p className="text-sm text-orange-700 mb-2 font-medium">
+                                    ⚠️ Paso requerido: Confirmar usuario en Supabase
+                                </p>
+                                <p className="text-xs text-orange-600 mb-2">
+                                    Ejecuta este SQL en el SQL Editor de Supabase para activar el usuario:
+                                </p>
+                                <pre className="bg-white text-xs p-3 rounded border border-orange-200 overflow-x-auto text-gray-700 whitespace-pre-wrap">
+                                    {passwordModal.confirmationSql}
+                                </pre>
+                            </div>
+                        )}
+
                         <p className="text-xs text-gray-500">
                             El usuario deberá cambiar esta contraseña en su primer inicio de sesión.
                         </p>
 
                         <div className="flex justify-end pt-2">
                             <button
-                                onClick={() => setPasswordModal({ isOpen: false, email: '', password: '' })}
+                                onClick={() => setPasswordModal({ isOpen: false, email: '', password: '', confirmationSql: '' })}
                                 className="bg-primary text-black px-4 py-2 rounded-lg font-medium hover:bg-primary/90"
                             >
                                 Entendido
@@ -508,6 +552,15 @@ export default function ClientsPage() {
                     </div>
                 </div>
             )}
+
+            {/* Client Orders Modal */}
+            <ClientOrdersModal
+                isOpen={!!selectedClientOrders}
+                onClose={() => setSelectedClientOrders(null)}
+                clientId={selectedClientOrders?.id || ''}
+                clientName={selectedClientOrders?.name || ''}
+                currentUserEmail={currentUser?.email || 'admin'}
+            />
         </div>
     );
 }

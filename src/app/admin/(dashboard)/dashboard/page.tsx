@@ -2,18 +2,30 @@ import { supabase } from '@/lib/supabase';
 import { Users, Package, FileText, UserPlus } from 'lucide-react';
 
 export default async function AdminDashboardPage() {
-    // Fetch real data from Supabase
-    const [
-        { count: leadsCount },
-        { count: clientsCount },
-        { count: ordersCount },
-        { count: productsCount }
-    ] = await Promise.all([
-        supabase.from('leads').select('*', { count: 'exact', head: true }),
-        supabase.from('clients').select('*', { count: 'exact', head: true }),
-        supabase.from('orders').select('*', { count: 'exact', head: true }).in('status', ['pending', 'processing']),
-        supabase.from('products').select('*', { count: 'exact', head: true })
-    ]);
+    // Fetch counts from Supabase
+    // Note: These queries run server-side without user session, so RLS must allow anonymous reading
+    // We use separate queries to avoid issues with RLS policies
+
+    let leadsCount = 0;
+    let clientsCount = 0;
+    let ordersCount = 0;
+    let productsCount = 0;
+
+    try {
+        const [leads, clients, orders, products] = await Promise.all([
+            supabase.from('leads').select('id', { count: 'exact', head: true }),
+            supabase.from('user_profiles').select('id', { count: 'exact', head: true }).eq('role', 'client'),
+            supabase.from('orders').select('id', { count: 'exact', head: true }).in('status', ['solicitud', 'activa']),
+            supabase.from('products').select('id', { count: 'exact', head: true })
+        ]);
+
+        leadsCount = leads.count ?? 0;
+        clientsCount = clients.count ?? 0;
+        ordersCount = orders.count ?? 0;
+        productsCount = products.count ?? 0;
+    } catch (error) {
+        console.error('Dashboard data fetch error:', error);
+    }
 
     return (
         <div className="space-y-6">
@@ -28,28 +40,28 @@ export default async function AdminDashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
                     title="Leads"
-                    value={(leadsCount || 0).toString()}
+                    value={leadsCount.toString()}
                     change="Potenciales"
                     icon={UserPlus}
                     color="blue"
                 />
                 <StatCard
                     title="Clientes Actuales"
-                    value={(clientsCount || 0).toString()}
+                    value={clientsCount.toString()}
                     change="Registrados"
                     icon={Users}
                     color="green"
                 />
                 <StatCard
                     title="Órdenes Activas"
-                    value={(ordersCount || 0).toString()}
+                    value={ordersCount.toString()}
                     change="En proceso"
                     icon={FileText}
                     color="yellow"
                 />
                 <StatCard
                     title="Productos Agregados"
-                    value={(productsCount || 0).toString()}
+                    value={productsCount.toString()}
                     change="En catálogo"
                     icon={Package}
                     color="purple"

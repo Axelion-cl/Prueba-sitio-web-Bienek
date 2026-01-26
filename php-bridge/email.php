@@ -66,6 +66,37 @@ function verifyTurnstile($token, $secretKey)
     return isset($json['success']) && $json['success'] === true;
 }
 
+// Strict email validation
+function isValidEmail($email)
+{
+    // Basic format check
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+
+    // Email must have @ and domain with TLD
+    if (!preg_match('/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/', $email)) {
+        return false;
+    }
+
+    // Additional checks
+    list($localPart, $domain) = explode('@', $email);
+
+    // Domain must have at least one dot
+    if (strpos($domain, '.') === false) {
+        return false;
+    }
+
+    // TLD must be at least 2 characters
+    $parts = explode('.', $domain);
+    $tld = end($parts);
+    if (strlen($tld) < 2) {
+        return false;
+    }
+
+    return true;
+}
+
 // Check token
 // Check token (Skip for 'order' type as it is an internal authenticated action)
 $type = isset($_POST['type']) ? $_POST['type'] : 'contact';
@@ -84,7 +115,7 @@ $type = isset($_POST['type']) ? $_POST['type'] : 'contact'; // 'contact' or 'app
 
 // Sanitización básica
 $name = isset($_POST['name']) ? htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8') : '';
-$email = isset($_POST['email']) ? filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) : '';
+$raw_email = isset($_POST['email']) ? trim($_POST['email']) : '';
 $phone = isset($_POST['phone']) ? htmlspecialchars($_POST['phone'], ENT_QUOTES, 'UTF-8') : '';
 $message = isset($_POST['message']) ? htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8') : '';
 
@@ -99,11 +130,20 @@ if (empty($field3_value) && isset($_POST['company'])) {
 $field3_label = ($type === 'application') ? 'Área de Interés' : 'Empresa';
 
 // Validate required fields
-if (!$name || !$email) {
+if (!$name || !$raw_email) {
     http_response_code(400);
     echo json_encode(['error' => 'Faltan campos requeridos (Nombre o Email)']);
     exit();
 }
+
+// Validate email strict format
+if (!isValidEmail($raw_email)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'El formato del correo no es válido. Debe ser ej: nombre@dominio.cl']);
+    exit();
+}
+
+$email = $raw_email;
 
 // Build HTML email
 $date = date('d/m/Y H:i');

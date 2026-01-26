@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Send, Upload, X, FileSpreadsheet, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { isValidEmail, getEmailValidationError, suggestEmailCorrection } from "@/utils/validation";
 
 // ... imports
 
@@ -42,11 +43,39 @@ export function ContactForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    const [emailError, setEmailError] = useState<string | null>(null);
+    const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+
+        // Validate email on blur or change
+        if (name === 'email') {
+            if (value.trim()) {
+                const error = getEmailValidationError(value);
+                setEmailError(error);
+
+                if (error) {
+                    const suggestion = suggestEmailCorrection(value);
+                    setEmailSuggestion(suggestion);
+                } else {
+                    setEmailSuggestion(null);
+                }
+            } else {
+                setEmailError(null);
+                setEmailSuggestion(null);
+            }
+        }
+    };
+
+    const applySuggestion = () => {
+        if (emailSuggestion) {
+            setFormData(prev => ({ ...prev, email: emailSuggestion }));
+            setEmailError(null);
+            setEmailSuggestion(null);
+        }
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +124,14 @@ export function ContactForm() {
 
         if (!turnstileToken) {
             alert("Por favor verifica que no eres un robot.");
+            return;
+        }
+
+        // Validate email before submitting
+        if (!isValidEmail(formData.email)) {
+            const error = getEmailValidationError(formData.email);
+            setEmailError(error);
+            alert(error || "Por favor ingresa un correo electrónico válido");
             return;
         }
 
@@ -205,9 +242,25 @@ export function ContactForm() {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder="ejemplo@dominio.cl"
-                            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-gray-400"
+                            className={`w-full px-4 py-3 rounded-lg border ${emailError ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-white'
+                                } focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-gray-400`}
                             required
                         />
+                        {emailError && (
+                            <p className="text-xs text-red-600 flex items-start gap-1">
+                                <span>⚠️</span>
+                                <span>{emailError}</span>
+                            </p>
+                        )}
+                        {emailSuggestion && (
+                            <button
+                                type="button"
+                                onClick={applySuggestion}
+                                className="text-xs text-blue-600 hover:text-blue-700 underline"
+                            >
+                                ¿Quisiste decir <strong>{emailSuggestion}</strong>?
+                            </button>
+                        )}
                     </div>
 
                     {/* Company */}

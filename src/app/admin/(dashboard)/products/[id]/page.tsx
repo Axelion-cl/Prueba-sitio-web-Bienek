@@ -1,7 +1,8 @@
-import { products } from '@/data/mockProducts';
+import { getAllProducts } from '@/services/products';
 import EditProductView from '@/components/admin/products/EditProductView';
 
 export async function generateStaticParams() {
+    const products = await getAllProducts();
     return products.map((product) => ({
         id: product.id,
     }));

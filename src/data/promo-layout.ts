@@ -1,4 +1,5 @@
-import { Product, products } from "./mockProducts";
+import { Product } from "@/types/product";
+import { getAllProducts } from "@/services/products";
 
 // Block Types
 export type PromoBlockType = 'grid' | 'banner';
@@ -35,9 +36,10 @@ export function isBannerBlock(block: PromoBlock): block is PromoBlock & { config
     return block.type === 'banner';
 }
 
-// Helper to get products by IDs
-export function getProductsByIds(ids: string[]): Product[] {
-    return ids.map(id => products.find(p => p.id === id)).filter(Boolean) as Product[];
+// Helper to get products by IDs (async - fetches from Supabase)
+export async function getProductsByIds(ids: string[]): Promise<Product[]> {
+    const allProducts = await getAllProducts();
+    return ids.map(id => allProducts.find(p => p.id === id)).filter(Boolean) as Product[];
 }
 
 // ============================================

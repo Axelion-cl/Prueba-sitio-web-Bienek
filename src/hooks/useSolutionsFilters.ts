@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Product } from '@/data/mockProducts';
+import { Product } from '@/types/product';
 
 export function useSolutionsFilters(products: Product[]) {
     const searchParams = useSearchParams();

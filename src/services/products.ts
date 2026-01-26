@@ -1,6 +1,6 @@
 
 import { supabase } from '@/lib/supabase';
-import { Product } from '@/data/mockProducts';
+import { Product } from '@/types/product';
 
 // Re-export type used in components
 export type { Product };

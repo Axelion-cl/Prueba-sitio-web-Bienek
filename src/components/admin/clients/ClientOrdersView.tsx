@@ -1,19 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Package, ChevronDown, ChevronUp } from 'lucide-react';
-import { mockOrders, mockClients, Order } from '@/data/mockCRM';
+import { getOrdersByClient } from '@/services/orders';
+import { getClientById } from '@/services/clients';
+import { OrderWithItems, getOrderStatusLabel, getOrderStatusColor, OrderStatus, orderStatusLabels } from '@/types/order';
+import { Client } from '@/types/crm';
+import { useAuth } from '@/context/AuthContext';
+import { updateOrderStatus } from '@/services/orders';
 
 export default function ClientOrdersView({ clientId }: { clientId: string }) {
     const router = useRouter();
+    const { user } = useAuth();
+    const [client, setClient] = useState<Client | null>(null);
+    const [orders, setOrders] = useState<OrderWithItems[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const client = mockClients.find(c => c.id === clientId);
-    const clientOrders = mockOrders
-        .filter(o => o.clientId === clientId)
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            const [clientData, ordersData] = await Promise.all([
+                getClientById(clientId),
+                getOrdersByClient(clientId)
+            ]);
+            setClient(clientData);
+            setOrders(ordersData);
+            setIsLoading(false);
+        };
 
-    if (!clientId) return <div className="p-6">Cargando...</div>;
+        fetchData();
+    }, [clientId]);
+
+    if (isLoading) {
+        return (
+            <div className="p-6">
+                <div className="animate-pulse space-y-4">
+                    <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+            </div>
+        );
+    }
 
     if (!client) {
         return (
@@ -23,6 +51,19 @@ export default function ClientOrdersView({ clientId }: { clientId: string }) {
             </div>
         );
     }
+
+    const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
+        if (!user) return;
+
+        const result = await updateOrderStatus(orderId, newStatus, user.id);
+        if (result.success) {
+            // Refresh orders
+            const updatedOrders = await getOrdersByClient(clientId);
+            setOrders(updatedOrders);
+        } else {
+            alert('Error al actualizar estado: ' + result.error);
+        }
+    };
 
     return (
         <div className="space-y-6">
@@ -40,13 +81,17 @@ export default function ClientOrdersView({ clientId }: { clientId: string }) {
             </div>
 
             <div className="space-y-4">
-                {clientOrders.length === 0 ? (
+                {orders.length === 0 ? (
                     <div className="bg-white p-8 rounded-xl border border-gray-100 text-center text-gray-500">
                         Este cliente no tiene órdenes registradas.
                     </div>
                 ) : (
-                    clientOrders.map(order => (
-                        <OrderCard key={order.id} order={order} />
+                    orders.map(order => (
+                        <OrderCard
+                            key={order.id}
+                            order={order}
+                            onStatusChange={handleStatusChange}
+                        />
                     ))
                 )}
             </div>
@@ -54,22 +99,11 @@ export default function ClientOrdersView({ clientId }: { clientId: string }) {
     );
 }
 
-function OrderCard({ order }: { order: Order }) {
+function OrderCard({ order, onStatusChange }: {
+    order: OrderWithItems;
+    onStatusChange: (orderId: string, status: OrderStatus) => void;
+}) {
     const [isExpanded, setIsExpanded] = useState(false);
-
-    const statusColors = {
-        pending: 'bg-yellow-100 text-yellow-800',
-        processing: 'bg-blue-100 text-blue-800',
-        completed: 'bg-green-100 text-green-800',
-        cancelled: 'bg-red-100 text-red-800'
-    };
-
-    const statusLabels = {
-        pending: 'Pendiente',
-        processing: 'En Proceso',
-        completed: 'Completado',
-        cancelled: 'Cancelado'
-    };
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all">
@@ -83,17 +117,30 @@ function OrderCard({ order }: { order: Order }) {
                     </div>
                     <div>
                         <h3 className="font-semibold text-gray-900">Orden #{order.id}</h3>
-                        <p className="text-sm text-gray-500">{order.date}</p>
+                        <p className="text-sm text-gray-500">
+                            {new Date(order.created_at).toLocaleDateString('es-CL')}
+                        </p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-6">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[order.status]}`}>
-                        {statusLabels[order.status]}
-                    </span>
-                    <div className="text-right">
+                    {/* Status Dropdown */}
+                    <select
+                        value={order.status}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            onStatusChange(order.id, e.target.value as OrderStatus);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        className={`px-3 py-1 rounded-full text-xs font-medium border-0 cursor-pointer ${getOrderStatusColor(order.status)}`}
+                    >
+                        {Object.entries(orderStatusLabels).map(([value, label]) => (
+                            <option key={value} value={value}>{label}</option>
+                        ))}
+                    </select>
 
-                        <p className="text-xs text-gray-500">{order.items.length} productos</p>
+                    <div className="text-right">
+                        <p className="text-xs text-gray-500">{order.order_items?.length || 0} productos</p>
                     </div>
                     {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
                 </div>
@@ -103,19 +150,25 @@ function OrderCard({ order }: { order: Order }) {
                 <div className="border-t border-gray-100 bg-gray-50 p-6">
                     <h4 className="text-sm font-semibold text-gray-900 mb-4">Detalle de Productos</h4>
                     <div className="space-y-3">
-                        {order.items.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center text-sm">
+                        {order.order_items?.map((item) => (
+                            <div key={item.id} className="flex justify-between items-center text-sm">
                                 <div className="flex items-center gap-3">
                                     <span className="w-8 h-8 flex items-center justify-center bg-white rounded border border-gray-200 text-xs font-medium text-gray-500">
                                         x{item.quantity}
                                     </span>
-                                    <span className="text-gray-700">{item.productName}</span>
+                                    <span className="text-gray-700">{item.product_name}</span>
                                 </div>
-
                             </div>
                         ))}
                     </div>
 
+                    {order.notes && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                            <p className="text-sm text-gray-600">
+                                <strong>Notas:</strong> {order.notes}
+                            </p>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

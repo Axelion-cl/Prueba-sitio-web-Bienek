@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import { Product } from "@/data/mockProducts";
+import { Product } from "@/types/product";
 import { ProductGrid } from "@/components/soluciones/ProductGrid";
 import { SidebarFilters } from "@/components/soluciones/SidebarFilters";
 import { useSolutionsFilters } from "@/hooks/useSolutionsFilters";

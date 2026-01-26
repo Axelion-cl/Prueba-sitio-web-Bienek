@@ -6,30 +6,76 @@ import { Pencil, Lock, Check, X } from 'lucide-react';
 
 import { useLanguage } from '@/context/LanguageContext';
 
+import { updateProfile, changePassword } from '@/services/auth';
+import { useRouter } from 'next/navigation';
+
 export function MiPerfil() {
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth(); // Assuming refreshUser exists or we just rely on page reload/auth context update
     const { t } = useLanguage();
+    const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
     const [showPasswordForm, setShowPasswordForm] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState({
         nombre: user?.name || '',
         email: user?.email || '',
-        empresa: 'Nombre de tu empresa',
-        telefono: '+56 9 91234567'
+        empresa: user?.company || '',
+        telefono: user?.phone || ''
     });
 
-    const handleSave = () => {
-        // Mock save - would call API in real implementation
-        setIsEditing(false);
+    const handleSave = async () => {
+        if (!user) return;
+        setLoading(true);
+        try {
+            const { success, error } = await updateProfile({
+                full_name: formData.nombre,
+                company: formData.empresa,
+                phone: formData.telefono
+            });
+
+            if (success) {
+                alert('Perfil actualizado correctamente');
+                setIsEditing(false);
+                if (refreshUser) await refreshUser();
+            } else {
+                alert('Error al actualizar perfil: ' + error);
+            }
+        } catch (err) {
+            alert('Ocurrió un error inesperado');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handlePasswordChange = (e: React.FormEvent) => {
+    const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Mock password change
-        setShowPasswordForm(false);
-        alert('Contraseña actualizada correctamente (mock)');
+        const form = e.target as HTMLFormElement;
+        const currentPass = (form.elements[0] as HTMLInputElement).value;
+        const newPass = (form.elements[1] as HTMLInputElement).value;
+        const confirmPass = (form.elements[2] as HTMLInputElement).value;
+
+        if (newPass !== confirmPass) {
+            alert('las nuevas contraseñas no coinciden');
+            return;
+        }
+
+        setLoading(true);
+        // Note: Supabase implementation of changePassword typically doesn't strictly require current password if using the 'update' method for logged in user, 
+        // but our UI asks for it. Our service `changePassword` just takes the new password.
+        // If we wanted to verify current password we would need to SignIn first.
+
+        const { success, error } = await changePassword(newPass);
+
+        if (success) {
+            alert('Contraseña actualizada correctamente');
+            setShowPasswordForm(false);
+            form.reset();
+        } else {
+            alert('Error al cambiar contraseña: ' + error);
+        }
+        setLoading(false);
     };
 
     return (

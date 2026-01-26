@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/data/mockProducts";
+import { Product } from "@/types/product";
 import { ProductCard } from "./ProductCard";
 import { Search, X } from "lucide-react";
 

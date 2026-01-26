@@ -114,3 +114,45 @@
     - [x] Configurar `loader` de imágenes para exportación estática (`unoptimized: true`) <!-- id: 118 -->
     - [x] Implementar Protección Spam (Cloudflare Turnstile) <!-- id: 119 -->
 - [ ] Documentación de Autonomía para el Cliente (Manual de Uso Admin) <!-- id: 102 -->
+
+---
+
+## Refinamientos y Mejoras (Enero 2026)
+
+### Mejoras Visuales y UX
+- [x] **Rediseño de Value Cards (Home)** <!-- id: 120 -->
+    - [x] Reemplazo de iconos por imágenes fotográficas de fondo
+    - [x] Implementación de overlay con gradiente para legibilidad
+    - [x] Efecto hover con zoom
+    - [x] Ajuste de altura (reducción de 120px)
+- [x] **Profesionalización de Formularios** <!-- id: 121 -->
+    - [x] Actualización de placeholders en ContactForm
+    - [x] Eliminación de negrita en botones de envío
+    - [x] Unificación de subtítulo en página Contacto
+
+### Funcionalidades de Cliente
+- [x] **Gestión de Pedidos desde Mi Cuenta** <!-- id: 122 -->
+    - [x] Botón "Contactar Vendedor" (Genera Excel automático con productos de interés)
+    - [x] Botón "Adjuntar Listado de Compra" (Upload de archivos PDF/Excel/Word)
+    - [x] Integración con php-bridge para envío de cotizaciones
+    - [x] Instalación de librería `xlsx` para generación de archivos
+
+### Mejoras de Arquitectura
+- [x] **Separación de Sesiones Admin/Usuario** <!-- id: 123 -->
+    - [x] Refactorización de `AuthContext` con `storageKey` configurable
+    - [x] Implementación de sesiones independientes (localStorage)
+    - [x] Actualización de Admin Layout con AuthProvider aislado
+
+### Correcciones de Textos y Copy
+- [x] **Actualización de Textos (Trabajo/Contacto)** <!-- id: 124 -->
+    - [x] Cambio "unirte" → "unirse" en Bolsa de Trabajo
+    - [x] Cambio "distribución industrial" → "distribución B2B"
+    - [x] Eliminación de "Beneficios de salud complementarios"
+    - [x] Cambio "Mis Productos" → "Mis Productos de interés"
+
+### Backend y Seguridad
+- [x] **Debugging de Email Bridge** <!-- id: 125 -->
+    - [x] Corrección de .htaccess bloqueante en Hostinger
+    - [x] Implementación de tipo "order" en email.php
+    - [x] Bypass de Turnstile para acciones autenticadas
+    - [x] Hardcoding de destinatario de correos (marketing@bienek.cl)

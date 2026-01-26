@@ -4,13 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
-import { ShoppingCart, FileText, User, Mail, Upload, Loader2, Send } from 'lucide-react';
+import { ShoppingCart, FileText, User, Upload, Loader2, Send } from 'lucide-react';
 import { MisProductos } from '@/components/cuenta/MisProductos';
 import { MisOrdenes } from '@/components/cuenta/MisOrdenes';
 import { MiPerfil } from '@/components/cuenta/MiPerfil';
 import { useCart } from '@/context/CartContext';
 import * as XLSX from 'xlsx';
 import { Button } from '@/components/ui/button';
+import { createOrder } from '@/services/orders';
 
 type TabType = 'productos' | 'ordenes' | 'perfil';
 
@@ -104,7 +105,20 @@ export default function MiCuentaPage() {
             });
 
             if (response.ok) {
-                alert("¡Solicitud enviada con éxito! Nos pondremos en contacto contigo.");
+                // Create order in Supabase
+                const orderItems = cartItems.map(item => ({
+                    productId: item.product.id,
+                    productName: item.product.name,
+                    quantity: 1
+                }));
+
+                const orderResult = await createOrder(user.id, orderItems);
+
+                if (orderResult.success) {
+                    alert(`¡Solicitud enviada con éxito! Número de orden: ${orderResult.orderId}. Nos pondremos en contacto contigo.`);
+                } else {
+                    alert("¡Solicitud enviada con éxito! Nos pondremos en contacto contigo.");
+                }
             } else {
                 const resData = await response.json();
                 console.error(resData);

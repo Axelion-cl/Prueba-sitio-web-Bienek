@@ -2,7 +2,7 @@
 
 import { } from "react";
 import Image from "next/image";
-import { Product } from "@/data/mockProducts";
+import { Product } from "@/types/product";
 import { ImageIcon, Check } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 

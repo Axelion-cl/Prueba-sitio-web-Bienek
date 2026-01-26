@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { Product } from '@/data/mockProducts';
+import { Product } from '@/types/product';
 import { Plus, Search, Edit, Trash2, ChevronLeft, ChevronRight, Upload, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { deleteProduct } from '@/services/admin/products';

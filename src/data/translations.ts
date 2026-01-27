@@ -108,7 +108,7 @@ export const translations = {
         // Sectors (Solutions)
         sectores: {
             accesorios: {
-                title: 'Equipamiento y Accesorios',
+                title: 'Equipamiento Accesorios',
                 description: 'Herramientas manuales de alto rendimiento.',
             },
             maquinaria: {
@@ -116,27 +116,27 @@ export const translations = {
                 description: 'Tecnología para grandes superficies.',
             },
             educacion: {
-                title: 'Sector Educación',
+                title: 'Soluciones Especializadas sector Educación',
                 description: 'Ambientes seguros para el aprendizaje.',
             },
             horeca: {
-                title: 'Canal HORECA',
+                title: 'Soluciones Especializadas sector HORECA',
                 description: 'Impecabilidad para Hoteles, Restaurantes y Catering.',
             },
             industrial: {
-                title: 'Industrial y Almacenaje',
+                title: 'Soluciones Especializadas sector Industrial y Almacenaje',
                 description: 'Limpieza profunda para entornos exigentes.',
             },
             institucional: {
-                title: 'Sector Institucional',
+                title: 'Soluciones Especializadas sector Institucional',
                 description: 'Limpieza para oficinas y edificios públicos.',
             },
             salud: {
-                title: 'Área Salud',
+                title: 'Soluciones Especializadas sector Salud',
                 description: 'Higiene crítica para clínicas y hospitales.',
             },
             veterinario: {
-                title: 'Sector Veterinario',
+                title: 'Soluciones Especializadas sector Veterinario',
                 description: 'Desinfección segura para clínicas veterinarias.',
             },
             higiene: {
@@ -144,15 +144,15 @@ export const translations = {
                 description: 'Productos esenciales para la limpieza diaria.',
             },
             adultoMayor: {
-                title: 'Centros Adulto Mayor',
+                title: 'Soluciones para Centros Adulto Mayor',
                 description: 'Cuidado delicado para espacios residenciales.',
             },
             embarcaciones: {
-                title: 'Embarcaciones',
+                title: 'Soluciones para Embarcaciones',
                 description: 'Limpieza especializada marítima.',
             },
             aguas: {
-                title: 'Tratamiento de Agua',
+                title: 'Tratamiento de Aguas',
                 description: 'Soluciones químicas para calidad del agua.',
             },
         },

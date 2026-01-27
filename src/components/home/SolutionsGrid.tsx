@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heading } from "@/components/ui/typography";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Define interface locally since service was deleted
 interface Sector {
@@ -19,11 +20,13 @@ interface SolutionsGridProps {
 }
 
 export function SolutionsGrid({ sectors }: SolutionsGridProps) {
+    const { t } = useLanguage();
+
     return (
         <section className="py-20 bg-white">
             <div className="container mx-auto px-4 space-y-12">
                 <div className="text-center">
-                    <Heading>Nuestras Soluciones</Heading>
+                    <Heading>{t.home.nuestrasSoluciones}</Heading>
                     <div className="mx-auto mt-4 bg-[#ecec00] rounded-full" style={{ width: '176px', height: '5px' }} />
                 </div>
 
@@ -38,7 +41,7 @@ export function SolutionsGrid({ sectors }: SolutionsGridProps) {
                                 <Link
                                     href="/contacto"
                                     className="absolute inset-0 z-10"
-                                    aria-label={`Consultar por ${sector.title}`}
+                                    aria-label={`${t.home.consultarPor} ${sector.title}`}
                                 />
 
                                 {/* Background Image */}
@@ -60,7 +63,7 @@ export function SolutionsGrid({ sectors }: SolutionsGridProps) {
                                     <div className="h-0.5 w-0 bg-primary group-hover:w-16 transition-all duration-300 mb-2" />
 
                                     <p className="text-sm text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        Click para cotizar
+                                        {t.home.clickCotizar}
                                     </p>
                                 </div>
                             </div>

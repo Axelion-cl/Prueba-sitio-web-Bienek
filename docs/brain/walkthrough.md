@@ -1,44 +1,34 @@
-# Walkthrough: Backend Migration Setup
+# Walkthrough: Flujo de Recuperación y Seguridad de Contraseñas
 
 ## Cambios Realizados
 
-### 1. Base de Datos Supabase (`supabase/schema.sql`)
-Se ha generado un script SQL completo que define la estructura de datos para reemplazar los mocks locales.
-- **Tablas:** `sectors`, `families`, `products`, `articles`, `leads`, `clients`, `orders`.
-- **Seguridad (RLS):**
-    - **Público:** Catálogo de productos y blog.
-    - **Privado (Admin/Service Role):** Gestión de usuarios, leads y escrituras en general.
-    - **Cliente:** Acceso a sus propios datos (perfil, órdenes).
-- **Storage:** Configuración del bucket `products-images`.
+### 1. Componentes UX y Seguridad
+- **`PasswordInput` Reutilizable:** Se creó un componente unificado para inputs de contraseña que incluye el botón "ojito" para mostrar/ocultar caracteres.
+    - Implementado en: Login Usuario, Login Admin, Mi Perfil, Modal Borrar Cliente, Guard de Reset.
+- **Atributos de Autocompletado:** Se añadieron atributos `name`, `id` y `autoComplete` correctos para mejorar la integración con gestores de contraseñas de navegadores.
 
-### 2. PHP Bridge (`public/api/bridge.php`)
-Se ha creado el "puente" para ejecutar lógica de servidor en el hosting cPanel.
-- **Ubicación:** `/public/api/bridge.php` (se desplegará en la raíz del dominio).
-- **Funciones:**
-    - `send_email`: Envío de correos transaccionales usando la función `mail()` de PHP (compatible con cPanel).
-    - `admin_create_user`: Proxy seguro para crear usuarios en Supabase Auth sin exponer la Service Key.
-- **Seguridad:** Protegido mediante `X-API-Key`.
+### 2. Flujo de Recuperación ("Olvidé mi contraseña")
+Se implementó el flujo estándar de Supabase para reset de passwords vía email.
+- **Página de Solicitud (`/recuperar-password`):** Formulario para ingresar email y detonar el envío del correo de recuperación.
+- **Página de Actualización (`/actualizar-password`):** Landing page segura donde aterriza el usuario tras hacer clic en el email. Detecta el evento `PASSWORD_RECOVERY` de Supabase y permite establecer una nueva clave.
+- **Servicio `auth.ts`:** Nueva función `requestPasswordReset` que maneja `supabase.auth.resetPasswordForEmail` con redirección correcta.
+
+### 3. Seguridad Reforzada
+- **`PasswordResetGuard`:** Componente que intercepta la navegación. Si un usuario tiene el flag `must_change_password` (ej. credencial temporal), lo obliga a cambiar su clave antes de continuar.
+- **Validación en "Mi Perfil":** Refactorización para exigir la contraseña actual antes de permitir cambios, preveniendo accesos no autorizados en sesiones activas.
 
 ## Verificación
 
-### Cómo probar el Script SQL
-1. Ir al Dashboard de Supabase -> SQL Editor.
-2. Copiar el contenido de `supabase/schema.sql`.
-3. Ejecutar ("Run").
-4. Verificar que las tablas aparecen en el "Table Editor".
+### Cómo probar el Flujo de Recuperación
+1. Ir a `/login` y hacer clic en "¿Olvidaste tu contraseña?".
+2. Ingresar un email registrado (ej. `mi.email@ejemplo.com`) y enviar.
+3. Verificar la recepción del correo (en producción requiere SMTP de Mundo Hosting; en desarrollo local revisar logs de Supabase).
+4. El link del correo redirigirá a `/actualizar-password`.
+5. Ingresar la nueva contraseña y confirmar.
+6. Verificar redirección exitosa al perfil/home ya logueado.
 
-### Cómo probar el PHP Bridge
-1. Subir el archivo `public/api/bridge.php` a la carpeta `public_html/api/` en Mundo Hosting.
-2. Hacer un request POST con Postman/Curl:
-```bash
-curl -X POST https://tu-dominio.com/api/bridge.php \
-  -H "Content-Type: application/json" \
-  -H "X-API-Key: CAMBIAR_ESTO_POR_UN_SECRET_SEGURO_EN_PRODUCCION" \
-  -d '{
-    "action": "send_email",
-    "to": "prueba@bienek.cl",
-    "subject": "Test Bridge",
-    "html": "<h1>Hola desde el Bridge</h1>"
-  }'
-```
-3. Verificar la recepción del correo.
+### Cómo probar Cambio Forzado (Admin)
+1. Como Admin, ir a gestión de clientes y usar "Restablecer Contraseña" para un usuario.
+2. Loguearse con ese usuario y la contraseña temporal.
+3. Verificar que el sistema impide navegar y muestra el modal de "Cambio de Contraseña Obligatorio".
+4. Cambiar la contraseña y verificar acceso normal.

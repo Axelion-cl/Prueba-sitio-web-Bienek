@@ -156,7 +156,9 @@
     - [x] Implementación de tipo "order" en email.php
     - [x] Bypass de Turnstile para acciones autenticadas
     - [x] Hardcoding de destinatario de correos (marketing@bienek.cl)
-- [ ] **Seguridad de Usuario** <!-- id: 126 -->
-    - [ ] Refactorizar cambio de contraseña con validación de contraseña actual y estado controlado <!-- id: 127 -->
-- [ ] **Seguridad de Usuario** <!-- id: 126 -->
-    - [ ] Refactorizar cambio de contraseña con validación de contraseña actual y estado controlado <!-- id: 127 -->
+- [x] **Seguridad de Usuario** <!-- id: 126 -->
+    - [x] Refactorizar cambio de contraseña con validación de contraseña actual y estado controlado <!-- id: 127 -->
+- [x] **Seguridad de Usuario** <!-- id: 126 -->
+    - [x] Refactorizar cambio de contraseña con validación de contraseña actual y estado controlado <!-- id: 127 -->
+    - [x] Implementar bloqueo forzado de cambio de contraseña <!-- id: 128 -->
+    - [x] Implementar flujo de recuperación de contraseña (Forgot Password) <!-- id: 129 -->

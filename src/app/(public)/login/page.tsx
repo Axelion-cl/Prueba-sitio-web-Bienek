@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
+import PasswordInput from '@/components/ui/PasswordInput';
 import Link from 'next/link';
 
 import { useLanguage } from '@/context/LanguageContext';
@@ -73,10 +74,12 @@ export default function LoginPage() {
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                 <input
                                     id="email"
+                                    name="email"
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
+                                    autoComplete="username"
                                     placeholder="tu@email.com"
                                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 />
@@ -89,22 +92,23 @@ export default function LoginPage() {
                                 {t.login.contrasena}
                             </label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                <input
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10" />
+                                <PasswordInput
                                     id="password"
-                                    type="password"
+                                    name="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
+                                    autoComplete="current-password"
                                     placeholder="••••••••"
-                                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                    className="w-full pl-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 />
                             </div>
                         </div>
 
                         {/* Forgot Password Link */}
                         <div className="text-right">
-                            <Link href="/recuperar-password" className="text-sm text-primary hover:underline">
+                            <Link href="/recuperar-password" className="text-sm text-gray-600 hover:text-black hover:underline transition-colors">
                                 {t.login.olvidasteContrasena}
                             </Link>
                         </div>
@@ -126,16 +130,7 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    {/* Demo Credentials */}
-                    <div className="mt-6 pt-6 border-t border-gray-200">
-                        <p className="text-xs text-gray-500 text-center mb-3">
-                            {t.login.credencialesPrueba}
-                        </p>
-                        <div className="bg-gray-50 rounded-lg p-3 text-xs text-gray-600 font-mono">
-                            <p>Email: cliente@bienek.cl</p>
-                            <p>Password: 123456</p>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>

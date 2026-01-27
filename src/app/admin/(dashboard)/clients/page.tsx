@@ -13,6 +13,7 @@ import { isValidEmail, getEmailValidationError } from '@/utils/validation';
 import { ClientOrdersModal } from '@/components/admin/clients/ClientOrdersModal';
 import { useAuth } from '@/context/AuthContext';
 import { Package } from 'lucide-react';
+import PasswordInput from '@/components/ui/PasswordInput';
 
 interface Lead {
     id: string;
@@ -489,8 +490,7 @@ export default function ClientsPage() {
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Ingresa tu contraseña de administrador:
                             </label>
-                            <input
-                                type="password"
+                            <PasswordInput
                                 value={adminPassword}
                                 onChange={(e) => { setAdminPassword(e.target.value); setDeleteError(''); }}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"

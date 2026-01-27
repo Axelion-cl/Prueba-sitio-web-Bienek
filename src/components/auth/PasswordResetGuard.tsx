@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { changePasswordWithVerification } from '@/services/auth';
+import PasswordInput from '@/components/ui/PasswordInput';
 import { Lock, LogOut, CheckCircle, AlertTriangle } from 'lucide-react';
 
 export default function PasswordResetGuard({ children }: { children: React.ReactNode }) {
@@ -77,11 +78,13 @@ export default function PasswordResetGuard({ children }: { children: React.React
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="guard-current-password" className="block text-sm font-medium text-gray-700 mb-1">
                                 Contraseña Actual (Temporal)
                             </label>
-                            <input
-                                type="password"
+                            <PasswordInput
+                                id="guard-current-password"
+                                name="current-password"
+                                autoComplete="current-password"
                                 value={currentPassword}
                                 onChange={(e) => setCurrentPassword(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none transition-all"
@@ -91,11 +94,13 @@ export default function PasswordResetGuard({ children }: { children: React.React
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="guard-new-password" className="block text-sm font-medium text-gray-700 mb-1">
                                 Nueva Contraseña
                             </label>
-                            <input
-                                type="password"
+                            <PasswordInput
+                                id="guard-new-password"
+                                name="new-password"
+                                autoComplete="new-password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none transition-all"
@@ -106,11 +111,13 @@ export default function PasswordResetGuard({ children }: { children: React.React
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="guard-confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
                                 Confirmar Nueva Contraseña
                             </label>
-                            <input
-                                type="password"
+                            <PasswordInput
+                                id="guard-confirm-password"
+                                name="confirm-password"
+                                autoComplete="new-password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none transition-all"

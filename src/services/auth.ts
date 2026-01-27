@@ -137,6 +137,26 @@ export async function getCurrentUser(): Promise<{
 // PASSWORD MANAGEMENT
 // ============================================
 
+export async function requestPasswordReset(email: string): Promise<{ success: boolean; error?: string }> {
+    try {
+        // Determine URL based on environment or window
+        const siteUrl = typeof window !== 'undefined'
+            ? window.location.origin
+            : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
+
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${siteUrl}/actualizar-password`,
+        });
+
+        if (error) throw error;
+
+        return { success: true };
+    } catch (error: any) {
+        console.error('Password reset request error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 export async function changePasswordWithVerification(
     email: string,
     currentPassword: string,

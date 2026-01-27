@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Pencil, Lock, Check, X } from 'lucide-react';
+import PasswordInput from '@/components/ui/PasswordInput';
 
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -192,9 +193,11 @@ export function MiPerfil() {
                 {showPasswordForm ? (
                     <form onSubmit={handlePasswordChange} className="space-y-4">
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1">{t.miCuenta.contrasenaActual}</label>
-                            <input
-                                type="password"
+                            <label htmlFor="current-password" className="block text-sm text-gray-600 mb-1">{t.miCuenta.contrasenaActual}</label>
+                            <PasswordInput
+                                id="current-password"
+                                name="current-password"
+                                autoComplete="current-password"
                                 required
                                 value={passwords.current}
                                 onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
@@ -203,9 +206,11 @@ export function MiPerfil() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1">{t.miCuenta.nuevaContrasena}</label>
-                            <input
-                                type="password"
+                            <label htmlFor="new-password" className="block text-sm text-gray-600 mb-1">{t.miCuenta.nuevaContrasena}</label>
+                            <PasswordInput
+                                id="new-password"
+                                name="new-password"
+                                autoComplete="new-password"
                                 required
                                 minLength={6}
                                 value={passwords.new}
@@ -215,9 +220,11 @@ export function MiPerfil() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1">{t.miCuenta.confirmarContrasena}</label>
-                            <input
-                                type="password"
+                            <label htmlFor="confirm-password" className="block text-sm text-gray-600 mb-1">{t.miCuenta.confirmarContrasena}</label>
+                            <PasswordInput
+                                id="confirm-password"
+                                name="confirm-password"
+                                autoComplete="new-password"
                                 required
                                 value={passwords.confirm}
                                 onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}

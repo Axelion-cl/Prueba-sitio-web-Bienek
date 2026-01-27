@@ -219,7 +219,7 @@ export const translations = {
             },
             contacto: {
                 titulo: 'Contáctanos',
-                subtitulo: '¿Tienes dudas o necesitas una cotización? Escríbenos y te responderemos a la brevedad.',
+                subtitulo: 'Puede contar con nosotros. Rellene los campos con su información y nos pondremos en contacto con usted. Si lo desea, puede adjuntar un listado de sus soluciones de interés.',
                 info: 'Información de Contacto',
                 direccion: 'Dirección',
                 direccionValue: 'Av. Ejemplo 123, Santiago',
@@ -447,7 +447,7 @@ export const translations = {
             },
             contacto: {
                 titulo: 'Contact Us',
-                subtitulo: 'Do you have questions or need a quote? Write to us and we will respond shortly.',
+                subtitulo: 'You can count on us. Please fill in the fields with your information and we will get in touch with you. If you wish, you may attach a list of your solutions of interest.',
                 info: 'Contact Information',
                 direccion: 'Address',
                 direccionValue: 'Av. Example 123, Santiago',

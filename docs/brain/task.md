@@ -51,6 +51,7 @@ Consolidar la plataforma para lanzamiento. El sistema backend (Supabase) ya est�
 ### Frontend Público
 - [x] **Catálogo Dinámico**: Home, Soluciones y Búsqueda conectados a datos reales.
 - [x] **Formularios**: Contacto y Postulación con protección Anti-Spam (Turnstile) y PHP Bridge.
+- [x] **Página de Construcción**: Desarrollo de landing premium temporal para fase de prelanzamiento.
 - [x] **Diseño UI/UX**: Mejoras en tarjetas, carruseles y consistencia visual.
 
 ---

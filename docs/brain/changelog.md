@@ -4,6 +4,15 @@ Este documento registra los cambios implementados durante las sesiones de desarr
 
 ---
 
+## Sesión: 2026-01-28 - Página de Construcción
+
+### UI/UX
+- **Nueva Página**: Creada `src/app/construccion/page.tsx` con un diseño premium "Bajo Construcción".
+- **Diseño**: Integración de colores de marca (#ECEC00), logo oficial, y estética moderna con glassmorphism.
+- **Funcionalidad**: Incluye accesos directos de contacto (Email y Teléfono) y mensaje de próximo lanzamiento.
+
+---
+
 ## Sesión: 2026-01-23 - Debugging Formulario de Contacto (Hostinger)
 
 ### Corrección de Envío de Correos

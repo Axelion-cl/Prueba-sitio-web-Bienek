@@ -80,6 +80,7 @@ export interface Client {
     phone?: string;
     status: string;     // 'active' or 'inactive' - we can derive from profile
     registration_date: string; // from created_at
+    temp_password?: string | null; // Nuevo campo para visualización temporal
 }
 
 /**
@@ -105,7 +106,8 @@ export async function getClients(): Promise<Client[]> {
         company: profile.company || '',
         phone: profile.phone || '',
         status: 'active', // All registered users are active by default
-        registration_date: profile.created_at
+        registration_date: profile.created_at,
+        temp_password: profile.temp_password || null
     }));
 }
 
@@ -166,6 +168,7 @@ export async function convertLeadToClient(leadId: string) {
             phone: lead.phone || null,
             role: 'client',
             must_change_password: true,
+            temp_password: tempPassword, // Store temp password securely (only viewable by admin)
             created_at: new Date().toISOString()
         });
 

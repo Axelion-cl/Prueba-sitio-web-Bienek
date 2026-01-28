@@ -35,6 +35,7 @@ interface Client {
     phone?: string;
     status: string;
     registration_date: string;
+    temp_password?: string | null;
 }
 
 export default function ClientsPage() {
@@ -347,6 +348,22 @@ export default function ClientsPage() {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2">
+                                                {/* View Temp Password (Only if exists) */}
+                                                {client.temp_password && (
+                                                    <button
+                                                        onClick={() => setPasswordModal({
+                                                            isOpen: true,
+                                                            email: client.email,
+                                                            password: client.temp_password || '',
+                                                            confirmationSql: '' // Not managing confirmation here, just viewing
+                                                        })}
+                                                        className="p-2 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors border border-yellow-200"
+                                                        title="Ver Contraseña Temporal"
+                                                    >
+                                                        <Key className="w-4 h-4" />
+                                                    </button>
+                                                )}
+
                                                 {/* Orders Button */}
                                                 <button
                                                     onClick={() => setSelectedClientOrders({ id: client.id, name: client.name })}

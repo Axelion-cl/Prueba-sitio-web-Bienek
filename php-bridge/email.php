@@ -312,7 +312,7 @@ ob_start();
                         style="color: #1a365d;"><?php echo $phone; ?></a></div>
             </div>
             <div class="field">
-                <div class="field-label">Rut Facturación</div>
+                <div class="field-label">RUT Facturación</div>
                 <div class="field-value"><?php echo $rut; ?></div>
             </div>
             <div class="field">

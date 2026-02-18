@@ -301,7 +301,7 @@ export function ContactForm() {
                     {/* RUT Facturación */}
                     <div className="space-y-2">
                         <label htmlFor="rut" className="text-sm font-medium text-gray-700">
-                            Rut facturación <span className="text-red-500">*</span>
+                            RUT facturación <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="text"

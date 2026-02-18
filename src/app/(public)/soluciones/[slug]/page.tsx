@@ -73,7 +73,7 @@ export default async function SolucionesPage({ params }: PageProps) {
             <SolutionsLayout
                 initialProducts={products}
                 initialFamilies={families}
-                featuredFamilies={sector.featured_families || []}
+                featuredFamilies={sector.featuredFamilies || []}
             />
         </main>
     );

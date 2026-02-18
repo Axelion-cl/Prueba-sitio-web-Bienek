@@ -17,7 +17,7 @@ export const translations = {
             // Main Menu
             inicio: 'Inicio',
             soluciones: 'Soluciones',
-            promociones: 'Promociones',
+
             blogTecnico: 'Blog Técnico',
             accesoClientes: 'Acceso Clientes',
             contactenos: 'CONTACTENOS',
@@ -247,7 +247,7 @@ export const translations = {
             // Main Menu
             inicio: 'Home',
             soluciones: 'Solutions',
-            promociones: 'Promotions',
+
             blogTecnico: 'Technical Blog',
             accesoClientes: 'Client Access',
             contactenos: 'CONTACT US',

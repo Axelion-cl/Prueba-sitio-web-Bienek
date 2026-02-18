@@ -240,7 +240,7 @@ export function Header() {
                                 </div>
                             </div>
 
-                            <Link href="/promociones" className="hover:text-primary transition-colors">{t.header.promociones}</Link>
+
                         </nav>
                     </div>
 

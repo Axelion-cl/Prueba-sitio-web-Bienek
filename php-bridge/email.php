@@ -127,6 +127,7 @@ $name = isset($_POST['name']) ? htmlspecialchars($_POST['name'], ENT_QUOTES, 'UT
 $raw_email = isset($_POST['email']) ? trim($_POST['email']) : '';
 $phone = isset($_POST['phone']) ? htmlspecialchars($_POST['phone'], ENT_QUOTES, 'UTF-8') : '';
 $message = isset($_POST['message']) ? htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8') : '';
+$rut = isset($_POST['rut']) ? htmlspecialchars($_POST['rut'], ENT_QUOTES, 'UTF-8') : '';
 
 // Campo dinámico (Empresa o Área)
 $field3_value = isset($_POST['d3']) ? htmlspecialchars($_POST['d3'], ENT_QUOTES, 'UTF-8') : ''; // d3 is generic
@@ -309,6 +310,10 @@ ob_start();
                 <div class="field-label">Teléfono</div>
                 <div class="field-value"><a href="tel:<?php echo $phone; ?>"
                         style="color: #1a365d;"><?php echo $phone; ?></a></div>
+            </div>
+            <div class="field">
+                <div class="field-label">Rut Facturación</div>
+                <div class="field-value"><?php echo $rut; ?></div>
             </div>
             <div class="field">
                 <div class="field-label">Mensaje / Presentación</div>

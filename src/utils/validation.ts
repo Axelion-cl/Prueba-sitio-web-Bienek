@@ -126,3 +126,62 @@ export function suggestEmailCorrection(email: string): string | null {
 
     return null;
 }
+
+/**
+ * Validates Chilean RUT
+ * Algoritmo del Módulo 11
+ */
+export function isValidRut(rut: string): boolean {
+    if (!rut || typeof rut !== 'string') return false;
+
+    // Clean RUT: remove dots and dash, convert to uppercase
+    const cleanRut = rut.replace(/\./g, '').replace(/-/g, '').toUpperCase();
+
+    // Basic format: at least 2 characters (e.g., 1-9)
+    if (cleanRut.length < 2) return false;
+
+    const body = cleanRut.slice(0, -1);
+    const dv = cleanRut.slice(-1);
+
+    // Validate body is numeric
+    if (!/^[0-9]+$/.test(body)) return false;
+
+    // Calculate DV
+    let sum = 0;
+    let multiplier = 2;
+
+    for (let i = body.length - 1; i >= 0; i--) {
+        sum += parseInt(body[i]) * multiplier;
+        multiplier = multiplier === 7 ? 2 : multiplier + 1;
+    }
+
+    const expectedDv = 11 - (sum % 11);
+    let calculatedDv = '';
+
+    if (expectedDv === 11) calculatedDv = '0';
+    else if (expectedDv === 10) calculatedDv = 'K';
+    else calculatedDv = expectedDv.toString();
+
+    return calculatedDv === dv;
+}
+
+/**
+ * Formats a raw RUT string into 12.345.678-9 format
+ */
+export function formatRut(rut: string): string {
+    const cleanRut = rut.replace(/\./g, '').replace(/-/g, '').toUpperCase();
+    if (cleanRut.length < 2) return cleanRut;
+
+    const body = cleanRut.slice(0, -1);
+    const dv = cleanRut.slice(-1);
+
+    let formattedBody = '';
+    for (let i = body.length - 1, j = 1; i >= 0; i--, j++) {
+        formattedBody = body[i] + formattedBody;
+        if (j % 3 === 0 && i !== 0) {
+            formattedBody = '.' + formattedBody;
+        }
+    }
+
+    return `${formattedBody}-${dv}`;
+}

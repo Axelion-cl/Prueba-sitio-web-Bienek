@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Send, Upload, X, FileSpreadsheet, Loader2 } from "lucide-react";
-import { isValidEmail, getEmailValidationError, suggestEmailCorrection } from "@/utils/validation";
+import { isValidEmail, getEmailValidationError, suggestEmailCorrection, isValidRut, formatRut } from "@/utils/validation";
 import { useLanguage } from "@/context/LanguageContext";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 
@@ -35,6 +35,7 @@ export function ContactForm() {
         company: "",
         phone: "",
         message: "",
+        rut: "",
     });
     const [file, setFile] = useState<File | null>(null);
     const [fileError, setFileError] = useState<string | null>(null);
@@ -43,6 +44,7 @@ export function ContactForm() {
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
+    const [rutError, setRutError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // ... (logic remains same, just replacing static strings where possible/needed or just the UI part)
@@ -68,6 +70,17 @@ export function ContactForm() {
                 setEmailError(null);
                 setEmailSuggestion(null);
             }
+        }
+        // Validate rut on change
+        if (name === 'rut') {
+            const formatted = formatRut(value);
+            setFormData((prev) => ({ ...prev, rut: formatted }));
+            if (formatted.trim() && !isValidRut(formatted)) {
+                setRutError("RUT no válido");
+            } else {
+                setRutError(null);
+            }
+            return; // Already updated state
         }
     };
 
@@ -128,6 +141,13 @@ export function ContactForm() {
             return;
         }
 
+        // Validate rut before submitting
+        if (!isValidRut(formData.rut)) {
+            setRutError("Por favor ingresa un RUT válido para la facturación");
+            alert("Por favor ingresa un RUT válido para la facturación");
+            return;
+        }
+
         // Validate email before submitting
         if (!isValidEmail(formData.email)) {
             const error = getEmailValidationError(formData.email);
@@ -146,6 +166,7 @@ export function ContactForm() {
             submitData.append("email", formData.email);
             submitData.append("company", formData.company);
             submitData.append("phone", formData.phone);
+            submitData.append("rut", formData.rut);
             submitData.append("message", formData.message);
             submitData.append("type", "contact");
             submitData.append("cf-turnstile-response", turnstileToken); // Add token
@@ -158,7 +179,7 @@ export function ContactForm() {
 
             if (emailSuccess) {
                 setSubmitStatus("success");
-                setFormData({ name: "", email: "", company: "", phone: "", message: "" });
+                setFormData({ name: "", email: "", company: "", phone: "", message: "", rut: "" });
                 removeFile();
                 setTurnstileToken(null);
             } else {
@@ -275,6 +296,30 @@ export function ContactForm() {
                             className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-gray-400"
                             required
                         />
+                    </div>
+
+                    {/* RUT Facturación */}
+                    <div className="space-y-2">
+                        <label htmlFor="rut" className="text-sm font-medium text-gray-700">
+                            Rut facturación <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="rut"
+                            name="rut"
+                            value={formData.rut}
+                            onChange={handleChange}
+                            placeholder="12.345.678-9"
+                            className={`w-full px-4 py-3 rounded-lg border ${rutError ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-white'
+                                } focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-gray-400`}
+                            required
+                        />
+                        {rutError && (
+                            <p className="text-xs text-red-600 flex items-start gap-1">
+                                <span>⚠️</span>
+                                <span>{rutError}</span>
+                            </p>
+                        )}
                     </div>
                 </div>
 

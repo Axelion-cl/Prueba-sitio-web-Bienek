@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { sectors as fallbackSectors } from '@/data/sectors';
 
 export interface Sector {
     id: string;
@@ -20,9 +21,9 @@ export async function getAllSectors(): Promise<Sector[]> {
         .select('*')
         .order('title');
 
-    if (error) {
-        console.error('Error fetching sectors:', error);
-        return [];
+    if (error || !data || data.length === 0) {
+        if (error) console.error('Error fetching sectors, falling back to local data:', error);
+        return fallbackSectors;
     }
 
     return data.map(mapSupabaseToSector);
@@ -38,9 +39,9 @@ export async function getSectorBySlug(slug: string): Promise<Sector | undefined>
         .eq('slug', slug)
         .single();
 
-    if (error) {
-        console.error(`Error fetching sector ${slug}:`, error);
-        return undefined;
+    if (error || !data) {
+        if (error) console.error(`Error fetching sector ${slug}, falling back to local data:`, error);
+        return fallbackSectors.find(s => s.slug === slug);
     }
 
     return mapSupabaseToSector(data);
@@ -56,9 +57,9 @@ export async function getSectorById(id: string): Promise<Sector | undefined> {
         .eq('id', id)
         .single();
 
-    if (error) {
-        console.error(`Error fetching sector ${id}:`, error);
-        return undefined;
+    if (error || !data) {
+        if (error) console.error(`Error fetching sector ${id}, falling back to local data:`, error);
+        return fallbackSectors.find(s => s.id === id);
     }
 
     return mapSupabaseToSector(data);

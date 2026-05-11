@@ -1,10 +1,19 @@
-# Evitar que se listen los archivos del directorio (seguridad básica)
+# Evitar que se listen los archivos del directorio
 Options -Indexes
 
-# Permitir acceso público a todos los archivos PHP (necesario para la API)
-# Si tenías "Deny from all", bórralo o coméntalo.
+# Bloquear acceso HTTP directo a archivos sensibles
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
 
-<FilesMatch "\.php$">
+<Files "test_capabilities.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Solo email.php es accesible públicamente
+<Files "email.php">
     Order Allow,Deny
     Allow from all
-</FilesMatch>
+</Files>

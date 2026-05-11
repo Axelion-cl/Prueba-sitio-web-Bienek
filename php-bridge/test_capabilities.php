@@ -1,9 +1,19 @@
 <?php
-// Simple Health Check & Diagnostics
-// Upload as: test_capabilities.php inside /api-bienek/
+/**
+ * Script de diagnóstico — DESHABILITADO en producción.
+ *
+ * Para usar: cambiar $ENABLED = false a $ENABLED = true temporalmente,
+ * ejecutar las pruebas, y volver a false inmediatamente.
+ * El acceso HTTP está bloqueado por .htaccess.
+ */
+$ENABLED = false;
+if (!$ENABLED) {
+    http_response_code(403);
+    exit('Acceso denegado.');
+}
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+ini_set('display_errors', 0);
+error_reporting(0);
 
 echo "<h1>Servidor de Diagnóstico de Bienek</h1>";
 echo "<p>Versión PHP: " . phpversion() . "</p>";

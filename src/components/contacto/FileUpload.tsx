@@ -39,10 +39,22 @@ export function FileUpload({ onFileSelect, error }: FileUploadProps) {
     };
 
     const validateAndSetFile = (file: File) => {
-        // Validate type (PDF or Word)
-        const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        // Validate extension (defense-in-depth junto con validación servidor)
+        const allowedExtensions = ['pdf', 'doc', 'docx'];
+        const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+        if (!allowedExtensions.includes(ext)) {
+            alert("Solo se permiten archivos PDF o Word (DOC, DOCX).");
+            return;
+        }
+
+        // Validate MIME type
+        const validTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ];
         if (!validTypes.includes(file.type)) {
-            alert("Solo se permiten archivos PDF o Word.");
+            alert("Solo se permiten archivos PDF o Word (DOC, DOCX).");
             return;
         }
 
